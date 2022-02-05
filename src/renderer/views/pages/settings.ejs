@@ -35,8 +35,6 @@
                     <div class="md-option-segment md-option-segment_auto">
                         <select class="md-select" style="width:180px;" v-model="app.cfg.audio.quality"
                                 v-on:change="changeAudioQuality">
-                            <!-- // <option value="9216">{{$root.getLz('settings.header.audio.quality.hireslossless')}}</option> -->
-                            <!-- <option value="2304">{{$root.getLz('settings.header.audio.quality.lossless')}}</option> -->
                             <option value="256">{{$root.getLz('settings.header.audio.quality.high')}}</option>
                             <option value="64">{{$root.getLz('settings.header.audio.quality.low')}}</option>
                             <option value="auto">{{$root.getLz('settings.header.audio.quality.auto')}}</option>
@@ -62,7 +60,7 @@
                                switch/>
                     </div>
                 </div>
-                <div class="md-option-line" v-show="app.cfg.advanced.AudioContext">
+                <!-- <div class="md-option-line" v-show="app.cfg.advanced.AudioContext">
                     <div class="md-option-segment">
                         {{$root.getLz('settings.option.audio.enableAdvancedFunctionality.ciderPPE')}}
                         <br>
@@ -71,7 +69,7 @@
                     <div class="md-option-segment md-option-segment_auto">
                         <input type="checkbox" v-model="app.cfg.advanced.ciderPPE" switch/>
                     </div>
-                </div>
+                </div> -->
                 <div class="md-option-line" v-show="app.cfg.advanced.AudioContext">
                     <div class="md-option-segment">
                         {{$root.getLz('term.equalizer')}}
@@ -162,14 +160,14 @@
                         <select class="md-select" v-model="app.cfg.visual.animated_artwork_qualityLevel">
                             <option value="0">{{$root.getLz('settings.header.visual.animatedArtworkQuality.low')}}
                             </option>
-                            <option value="1">{{$root.getLz('settings.header.visual.animatedArtworkQuality.medium')}}
+                            <!-- <option value="1">{{$root.getLz('settings.header.visual.animatedArtworkQuality.medium')}}
+                            </option> -->
+                            <option value="2">{{$root.getLz('settings.header.visual.animatedArtworkQuality.medium')}}
                             </option>
-                            <option value="2">{{$root.getLz('settings.header.visual.animatedArtworkQuality.high')}}
-                            </option>
-                            <option value="3">
+                            <!-- <option value="3">
                                 {{$root.getLz('settings.header.visual.animatedArtworkQuality.veryHigh')}}
-                            </option>
-                            <option value="4">{{$root.getLz('settings.header.visual.animatedArtworkQuality.extreme')}}
+                            </option> -->
+                            <option value="4">{{$root.getLz('settings.header.visual.animatedArtworkQuality.high')}}
                             </option>
                         </select>
                     </div>
@@ -199,7 +197,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="md-option-line">
+                <!-- <div class="md-option-line">
                     <div class="md-option-segment">
                         {{$root.getLz('settings.option.visual.showPersonalInfo')}}
                     </div>
@@ -207,7 +205,7 @@
                         <input type="checkbox" v-model="app.cfg.visual.showuserinfo" v-on:change="toggleUserInfo"
                                switch/>
                     </div>
-                </div>
+                </div> -->
             </div>
 
             <div class="md-option-header">
@@ -535,7 +533,6 @@
                     <div class="md-option-segment md-option-segment_auto">
                         <select class="md-select" v-model="app.cfg.general.discord_rpc">
                             <option value="0">{{$root.getLz('term.disabled')}}</option>
-                            <option value="1">{{$root.getLz('settings.header.connectivity.discordRPC.cider')}}</option>
                             <option value="2">{{$root.getLz('settings.header.connectivity.discordRPC.appleMusic')}}
                             </option>
                         </select>
@@ -639,7 +636,7 @@
                         <input type="checkbox" v-model="app.cfg.general.close_button_hide" switch/>
                     </div>
                 </div>
-                <div class="md-option-line">
+                <!-- <div class="md-option-line">
                     <div class="md-option-segment">
                         {{$root.getLz('term.updateCider')}} 
                     </div>
@@ -648,7 +645,7 @@
                             {{$root.getLz('term.check')}}
                         </button>
                     </div>
-                </div>
+                </div> -->
                 <div class="md-option-line">
                     <div class="md-option-segment">
                         {{$root.getLz('settings.option.experimental.copy_log')}} 
@@ -660,7 +657,7 @@
                     </div>
                 </div>
             </div>
-            <div style="opacity: 0.5; pointer-events: none">
+            <!-- <div style="opacity: 0.5; pointer-events: none">
                 <div class="md-option-header">
                     <span>{{$root.getLz('settings.header.unfinished')}}</span>
                 </div>
@@ -716,7 +713,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
 </script>
