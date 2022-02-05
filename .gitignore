@@ -317,3 +317,4 @@ keys.sh
 
 package-lock.json
 yarn.lock
+.prettierrc
