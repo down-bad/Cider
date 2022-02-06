@@ -328,10 +328,10 @@ const app = new Vue({
             },
             deep: true
         },
-        page: () => {
-            document.getElementById("app-content").scrollTo(0, 0);
-            app.resetState()
-        },
+        // page: () => {
+        //     document.getElementById("app-content").scrollTo(0, 0);
+        //     app.resetState()
+        // },
         showingPlaylist: () => {
             if (!app.modals.showPlaylist) {
                 document.getElementById("app-content").scrollTo(0, 0);
@@ -739,15 +739,6 @@ const app = new Vue({
 
             MusicKit.getInstance().videoContainerElement = document.getElementById("apple-music-video-player")
 
-            ipcRenderer.on('SoundCheckTag', (event, tag) => {
-                let replaygain = self.parseSCTagToRG(tag)
-                try {
-                    CiderAudio.audioNodes.gainNode.gain.value = (Math.min(Math.pow(10, (replaygain.gain / 20)), (1 / replaygain.peak)))
-                } catch (e) {
-
-                }
-            })
-
             ipcRenderer.on('play', function(_event, mode, id) {
               if (mode !== 'url'){
                 self.mk.setQueue({[mode]: id}).then(() => {
@@ -775,32 +766,7 @@ const app = new Vue({
                 if (self.$refs.queue) {
                     self.$refs.queue.updateQueue();
                 }
-                this.currentSongInfo = a
-                
-
-                if (app.cfg.audio.normalization) {
-                    // get unencrypted audio previews to get SoundCheck's normalization tag
-                    try {
-                        let previewURL = null
-                        try {
-                            previewURL = app.mk.nowPlayingItem.previewURL
-                        } catch (e) {
-                        }
-                        if (!previewURL) {
-                            app.mk.api.v3.music(`/v1/catalog/${app.mk.storefrontId}/songs/${app.mk.nowPlayingItem._songId ?? app.mk.nowPlayingItem.relationships.catalog.data[0].id}`).then((response) => {
-                                previewURL = response.data.data[0].attributes.previews[0].url
-                                if (previewURL)
-                                    ipcRenderer.send('getPreviewURL', previewURL)
-                            })
-                        } else {
-                            if (previewURL)
-                                ipcRenderer.send('getPreviewURL', previewURL)
-                        }
-
-                    } catch (e) {
-                    }
-                }
-                
+                this.currentSongInfo = a             
 
                 try {
                     a = a.item.attributes;
@@ -822,7 +788,6 @@ const app = new Vue({
                 // app.getNowPlayingArtwork(42); 
                 app.getNowPlayingArtworkBG(32);
                 app.loadLyrics();
-                app.losslessBadge();
 
                 // Playback Notifications
                 if (this.cfg.general.playbackNotifications && !document.hasFocus() && a.artistName && a.artwork && a.name) {
@@ -2348,25 +2313,7 @@ const app = new Vue({
             })
             notyf.success('Removed from library.')
         },
-        
-        async losslessBadge() {
-            const songID = (this.mk.nowPlayingItem != null) ? this.mk.nowPlayingItem["_songId"] ?? -1 : -1;
-            if (app.cfg.advanced.ciderPPE && songID != -1) {
-                /**let extendedAssets = await app.mk.api.song(songID, {extend : 'extendedAssetUrls'})
-                 if (extendedAssets.attributes.audioTraits.includes('lossless')) {*/
-                    app.mk.nowPlayingItem['attributes']['lossless'] = true
-                    CiderAudio.audioNodes.llpwEnabled = 1
-                    console.log("[Cider][Enhanced] Audio being processed by PPE")
-                /**}
-                else {
-                    CiderAudio.audioNodes.llpwEnabled = 0
-                }    */
-            }
-            
-            else {
-                CiderAudio.audioNodes.llpwEnabled = 0
-            }
-        },
+
         async loadYTLyrics() {
             const track = (this.mk.nowPlayingItem != null) ? this.mk.nowPlayingItem.title ?? '' : '';
             const artist = (this.mk.nowPlayingItem != null) ? this.mk.nowPlayingItem.artistName ?? '' : '';
@@ -3084,22 +3031,6 @@ const app = new Vue({
                                 self.$store.commit("setLCDArtwork", img)
                             })
 
-                            // Vibrant.from(this.mk["nowPlayingItem"]["attributes"]["artwork"]["url"].replace('{w}', size).replace('{h}', size)).getPalette().then(palette=>{
-                            //     let angle = "140deg"
-                            //     let gradient = ""
-                            //     let colors = Object.values(palette).filter(color=>color!=null)
-                            //     if(colors.length > 0){
-                            //         let stops = []
-                            //         colors.forEach(color=>{
-                            //             stops.push(`${self._rgbToRgb(color._rgb)} 0%`)
-                            //         })
-                            //         stops.push(`${self._rgbToRgb(colors[0]._rgb)} 100%`)
-                            //         gradient = `linear-gradient(${angle}, ${stops.join(", ")}`
-                            //     }
-                            //
-                            //     document.querySelector("#app").style.setProperty("--bgColor", gradient)
-                            // }).setQuantizer(Vibrant.Quantizer.WebWorker)
-
                             try {
                                 clearInterval(bginterval);
                             } catch (err) {
@@ -3570,21 +3501,21 @@ const app = new Vue({
                 element.onclick = app.LastFMDeauthorize;
             });
         },
-        parseSCTagToRG: function (tag) {
-            let soundcheck = tag.split(" ")
-            let numbers = []
-            for (item of soundcheck) {
-                numbers.push(parseInt(item, 16))
+        // parseSCTagToRG: function (tag) {
+        //     let soundcheck = tag.split(" ")
+        //     let numbers = []
+        //     for (item of soundcheck) {
+        //         numbers.push(parseInt(item, 16))
 
-            }
-            numbers.shift()
-            let gain = Math.log10((Math.max(numbers[0], numbers[1]) ?? 1000) / 1000.0) * -10
-            let peak = Math.max(numbers[6], numbers[7]) / 32768.0
-            return {
-                gain: gain,
-                peak: peak
-            }
-        },
+        //     }
+        //     numbers.shift()
+        //     let gain = Math.log10((Math.max(numbers[0], numbers[1]) ?? 1000) / 1000.0) * -10
+        //     let peak = Math.max(numbers[6], numbers[7]) / 32768.0
+        //     return {
+        //         gain: gain,
+        //         peak: peak
+        //     }
+        // },
         fullscreen(flag) {
             if (flag) {
                 ipcRenderer.send('setFullScreen', true);
@@ -3663,11 +3594,6 @@ const app = new Vue({
             } catch (e) {
                 return false
             }
-        },
-        async showWebRemoteQR() {
-            //this.webremoteqr = await ipcRenderer.invoke('setRemoteQR','')
-            this.webremoteurl = await ipcRenderer.invoke('showQR', '')
-            //this.modals.qrcode = true;
         },
         checkMarquee() {
             if (isElementOverflowing('#app-main > div.app-chrome > div.app-chrome--center > div > div > div.playback-info > div.song-artist') == true) {

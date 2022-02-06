@@ -52,13 +52,10 @@
                     <div class="playback-info">
                         <div class="song-name" style="-webkit-box-orient: horizontal;"
                              :class="[isElementOverflowing('#app-main > div.app-chrome > div.app-chrome--center > div > div > div.playback-info > div.song-name') ? 'marquee' : '']"
-                             :style="[mk.nowPlayingItem['attributes']['contentRating'] == 'explicit' || mk.nowPlayingItem['attributes']['lossless'] == true ? {'margin-left' : '23px'} : {'margin-left' : '0px'} ]">
+                             :style="[mk.nowPlayingItem['attributes']['contentRating'] == 'explicit']">
                             {{ mk.nowPlayingItem["attributes"]["name"] }}
                             <div class="explicit-icon"
                                  v-if="mk.nowPlayingItem['attributes']['contentRating'] == 'explicit'"
-                                 style="display: inline-block"></div>
-                            <div class="ppe-icon"
-                                 v-if="app.cfg.advanced.ciderPPE == true"
                                  style="display: inline-block"></div>
                         </div>
                         <div class="song-artist-album">

@@ -6,7 +6,6 @@ import * as getPort from "get-port";
 import {search} from "youtube-search-without-api-key";
 import {existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync} from "fs";
 import {Stream} from "stream";
-import {generate as generateQR} from "qrcode-terminal";
 import {hostname, networkInterfaces} from "os";
 import * as mm from 'music-metadata';
 import fetch from 'electron-fetch'
@@ -51,10 +50,6 @@ export class BrowserWindow {
                 "components/artwork-material",
                 "components/menu-panel",
                 "components/sidebar-playlist",
-                "components/spatial-properties",
-                "components/audio-settings",
-                "components/qrcode-modal",
-                "components/equalizer",
                 "components/add-to-playlist",
                 "components/queue",
                 "components/queue-item",
@@ -287,9 +282,6 @@ export class BrowserWindow {
             this.broadcastRemote()
             remote.listen(this.remotePort, () => {
                 console.log(`Cider remote port: ${this.remotePort}`);
-                if (firstRequest) {
-                    generateQR(`http://${hostname}:${this.remotePort}`);
-                }
                 firstRequest = false;
             })
             remote.get("/", (_req, res) => {
@@ -539,12 +531,6 @@ export class BrowserWindow {
 		    `)
         })
 
-        //QR Code
-        ipcMain.handle('showQR', async (_event, _) => {
-            let url = `http://${BrowserWindow.getIP()}:${this.remotePort}`;
-            shell.openExternal(`https://cider.sh/pair-remote?url=${Buffer.from(encodeURI(url)).toString('base64')}`).catch(console.error);
-        })
-
         ipcMain.on('get-remote-pair-url', (_event, _) => {
             let url = `http://${BrowserWindow.getIP()}:${this.remotePort}`;
             BrowserWindow.win.webContents.send('send-remote-pair-url', url);
@@ -670,9 +656,6 @@ export class BrowserWindow {
         console.log(path.join(__dirname, '../../src/renderer/views/svg/smartphone.svg'))
         const isMac = process.platform === 'darwin';
         //TODO: Figure out the icons
-        const remoteIcon = nativeImage.createFromPath(path.join(__dirname, '../../src/renderer/views/svg/smartphone.svg')).toPNG()
-        const soundIcon = nativeImage.createFromPath(path.join(__dirname, '../../src/renderer/views/svg/headphones.svg')).toPNG()
-        const aboutIcon = nativeImage.createFromPath(path.join(__dirname, '../../src/renderer/views/svg/info.svg')).toPNG()
         const settingsIcon = nativeImage.createFromPath(path.join(__dirname, '../../src/renderer/views/svg/settings.svg')).toPNG()
         const logoutIcon = nativeImage.createFromPath(path.join(__dirname, '../../src/renderer/views/svg/log-out.svg')).toPNG()
         const ciderIcon = nativeImage.createFromPath(path.join(__dirname, '../../src/renderer/assets/logocute.png'))
@@ -681,9 +664,6 @@ export class BrowserWindow {
             ...(isMac ? [{
                 label: app.name,
                 submenu: [
-                    { label: 'Web Remote', accelerator: 'CommandOrControl+W', sublabel: 'Opens in external window', click: () => BrowserWindow.win.webContents.executeJavaScript(`ipcRenderer.invoke('showQR')`)}, //accelerator
-                    { label: 'Audio Settings', accelerator: 'CommandOrControl+Shift+A', click: () => BrowserWindow.win.webContents.executeJavaScript(`app.modals.audioSettings = true`)},
-                    { label: 'About', accelerator: 'CommandOrControl+Shift+B', click: () => BrowserWindow.win.webContents.executeJavaScript(`app.appRoute('about'`)},
                     { label: 'Settings', accelerator: 'CommandOrControl+,', click: () => BrowserWindow.win.webContents.executeJavaScript(`app.appRoute('settings')`)},
                     { label: 'Logout', accelerator: 'CommandOrControl+Shift+O', click: () => BrowserWindow.win.webContents.executeJavaScript(`app.unauthorize(); document.location.reload()`)},
                     { type: 'separator' },

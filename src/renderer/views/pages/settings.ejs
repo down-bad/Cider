@@ -37,7 +37,6 @@
                                 v-on:change="changeAudioQuality">
                             <option value="256">{{$root.getLz('settings.header.audio.quality.high')}}</option>
                             <option value="64">{{$root.getLz('settings.header.audio.quality.low')}}</option>
-                            <option value="auto">{{$root.getLz('settings.header.audio.quality.auto')}}</option>
                         </select>
                     </div>
                 </div>
@@ -47,58 +46,6 @@
                     </div>
                     <div class="md-option-segment md-option-segment_auto">
                         <input type="checkbox" v-model="app.cfg.audio.seamless_audio" switch/>
-                    </div>
-                </div>
-                <div class="md-option-line">
-                    <div class="md-option-segment">
-                        {{$root.getLz('settings.option.audio.enableAdvancedFunctionality')}}
-                        <br>
-                        <small>{{$root.getLz('settings.option.audio.enableAdvancedFunctionality.description')}}</small>
-                    </div>
-                    <div class="md-option-segment md-option-segment_auto">
-                        <input type="checkbox" v-model="app.cfg.advanced.AudioContext" v-on:change="toggleAudioContext"
-                               switch/>
-                    </div>
-                </div>
-                <!-- <div class="md-option-line" v-show="app.cfg.advanced.AudioContext">
-                    <div class="md-option-segment">
-                        {{$root.getLz('settings.option.audio.enableAdvancedFunctionality.ciderPPE')}}
-                        <br>
-                        <small>{{$root.getLz('settings.option.audio.enableAdvancedFunctionality.ciderPPE.description')}}</small>
-                    </div>
-                    <div class="md-option-segment md-option-segment_auto">
-                        <input type="checkbox" v-model="app.cfg.advanced.ciderPPE" switch/>
-                    </div>
-                </div> -->
-                <div class="md-option-line" v-show="app.cfg.advanced.AudioContext">
-                    <div class="md-option-segment">
-                        {{$root.getLz('term.equalizer')}}
-                    </div>
-                    <div class="md-option-segment md-option-segment_auto">
-                        <button class="md-btn" onclick="app.modals.equalizer = true">
-                            {{$root.getLz('term.equalizer')}}
-                        </button>
-                    </div>
-                </div>
-                <div class="md-option-line" v-show="app.cfg.advanced.AudioContext">
-                    <div class="md-option-segment">
-                        {{$root.getLz('settings.option.audio.enableAdvancedFunctionality.audioNormalization')}}
-                        <br>
-                        <small>{{$root.getLz('settings.option.audio.enableAdvancedFunctionality.audioNormalization.description')}}</small>
-                    </div>
-                    <div class="md-option-segment md-option-segment_auto">
-                        <input type="checkbox" v-model="app.cfg.audio.normalization" v-on:change="toggleNormalization"
-                               switch/>
-                    </div>
-                </div>
-                <div class="md-option-line" v-show="app.cfg.advanced.AudioContext">
-                    <div class="md-option-segment">
-                        {{$root.getLz('settings.option.audio.enableAdvancedFunctionality.audioSpatialization')}}
-                        <br>
-                        <small>{{$root.getLz('settings.option.audio.enableAdvancedFunctionality.audioSpatialization.description')}}</small>
-                    </div>
-                    <div class="md-option-segment md-option-segment_auto">
-                        <input type="checkbox" v-model="app.cfg.audio.spatial" v-on:change="toggleSpatial" switch/>
                     </div>
                 </div>
             </div>
@@ -197,15 +144,6 @@
                         </select>
                     </div>
                 </div>
-                <!-- <div class="md-option-line">
-                    <div class="md-option-segment">
-                        {{$root.getLz('settings.option.visual.showPersonalInfo')}}
-                    </div>
-                    <div class="md-option-segment md-option-segment_auto">
-                        <input type="checkbox" v-model="app.cfg.visual.showuserinfo" v-on:change="toggleUserInfo"
-                               switch/>
-                    </div>
-                </div> -->
             </div>
 
             <div class="md-option-header">
@@ -636,16 +574,6 @@
                         <input type="checkbox" v-model="app.cfg.general.close_button_hide" switch/>
                     </div>
                 </div>
-                <!-- <div class="md-option-line">
-                    <div class="md-option-segment">
-                        {{$root.getLz('term.updateCider')}} 
-                    </div>
-                    <div class="md-option-segment md-option-segment_auto">
-                        <button class="md-btn" @click="app.checkForUpdate()">
-                            {{$root.getLz('term.check')}}
-                        </button>
-                    </div>
-                </div> -->
                 <div class="md-option-line">
                     <div class="md-option-segment">
                         {{$root.getLz('settings.option.experimental.copy_log')}} 
@@ -657,63 +585,6 @@
                     </div>
                 </div>
             </div>
-            <!-- <div style="opacity: 0.5; pointer-events: none">
-                <div class="md-option-header">
-                    <span>{{$root.getLz('settings.header.unfinished')}}</span>
-                </div>
-                <div class="settings-option-body">
-
-                    <div class="md-option-line">
-                        <div class="md-option-segment">
-                            Theme Options
-                        </div>
-                        <div class="md-option-segment md-option-segment_auto">
-                            <button class="btn">Theme Options</button>
-                        </div>
-                    </div>
-                    <div class="md-option-line">
-                        <div class="md-option-segment">
-                            Scrollbars
-                        </div>
-                        <div class="md-option-segment md-option-segment_auto">
-                            <select class="md-select">
-                                <option value="0">Show on hover</option>
-                                <option value="1">Always show</option>
-                                <option value="2">Hidden</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="md-option-line">
-                        <div class="md-option-segment">
-                            Refresh Rate
-                        </div>
-                        <div class="md-option-segment md-option-segment_auto">
-                            <select class="md-select">
-                                <option value='0'>Automatic</option>
-                                <option value='30'>30</option>
-                                <option value='60'>60</option>
-                                <option value='144'>144</option>
-                                <option value='175'>175</option>
-                                <option value='240'>240</option>
-                                <option value='360'>30</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="md-option-line">
-                        <div class="md-option-segment">
-                            Open Cider on Startup
-                        </div>
-                        <div class="md-option-segment md-option-segment_auto">
-                            <select class="md-select">
-                                <option value='0'>Never</option>
-                                <option value='1'>Always</option>
-                                <option value='2'>Always, minimized</option>
-                                <option value='2'>Always, hidden in tray</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div> -->
         </div>
     </div>
 </script>
@@ -765,34 +636,6 @@
 			},
 			removeExperiment(flag) {
 				app.cfg.advanced.experiments.splice(app.cfg.advanced.experiments.indexOf(flag), 1);
-			},
-			toggleAudioContext: function () {
-				if (app.cfg.advanced.AudioContext) {
-					CiderAudio.init();
-					if (app.cfg.audio.normalization) {
-						CiderAudio.normalizerOn()
-					}
-					if (app.cfg.audio.spatial) {
-						CiderAudio.spatialOn()
-					}
-				} else {
-                    app.cfg.advanced.ciderPPE = false;
-					CiderAudio.off();
-				}
-			},
-			toggleNormalization: function () {
-				if (app.cfg.audio.normalization) {
-					CiderAudio.normalizerOn()
-				} else {
-					CiderAudio.normalizerOff()
-				}
-			},
-			toggleSpatial: function () {
-				if (app.cfg.audio.spatial) {
-					CiderAudio.spatialOn()
-				} else {
-					CiderAudio.spatialOff()
-				}
 			},
 			changeAudioQuality: function () {
 				app.mk.bitrate = app.cfg.audio.quality
