@@ -81,7 +81,7 @@ export class BrowserWindow {
         minWidth: 900,
         minHeight: 390,
         frame: false,
-        title: "Cider",
+        title: "Apple Music",
         vibrancy: "fullscreen-ui",
         transparent: process.platform === "darwin",
         hasShadow: false,

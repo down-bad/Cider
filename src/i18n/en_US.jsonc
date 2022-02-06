@@ -5,7 +5,7 @@
   "i18n.category": "main", // main = real language, fun = fun community languages
   "i18n.authors": "@maikirakiwi", // Authors, if you contribute to this file feel free to add your name seperated with a space
   // App info
-  "app.name": "Cider",
+  "app.name": "Apple Music",
   "date.format": "${m} ${d}, ${y}",
   // Dialogs
   "dialog.cancel": "Cancel",
@@ -110,7 +110,7 @@
   "term.copyright": "Copyright",
   "term.rightsReserved": "All Rights Reserved.",
   "term.sponsor": "Sponsor this project",
-  "term.ciderTeam": "Cider Team",
+  "term.ciderTeam": "Apple Music Team",
   "term.developer": "Developer",
   "term.socialTeam": "Social Team",
   "term.socials": "Socials",
@@ -122,7 +122,7 @@
   "term.menu": "Menu",
   "term.check": "Check",
   "term.aboutArtist": "About {{artistName}}", // e.g. 'About Doja Cat'
-  "term.updateCider": "Update Cider",
+  "term.updateCider": "Update Apple Music",
   "term.topResult": "Top Result", // Search Results
   "term.sharedPlaylists": "Shared Playlists", // Search Results
   "term.people": "People", // Search Results
@@ -153,8 +153,8 @@
   "error.noResults": "No Results.",
   "error.noResults.description": "Try a new search.",
   //Podcasts
-  "podcast.followOnCider": "Follow On Cider",
-  "podcast.followedOnCider": "Following On Cider",
+  "podcast.followOnCider": "Follow On Apple Music",
+  "podcast.followedOnCider": "Following On Apple Music",
   "podcast.subscribeOnItunes": "Subscribe On iTunes",
   "podcast.subscribedOnItunes": "Subscribed On iTunes",
   "podcast.itunesStore": "iTunes Store",
@@ -211,7 +211,7 @@
   "action.deletepreset": "Delete Preset",
   // Settings - General
   "settings.header.general": "General",
-  "settings.header.general.description": "Adjust the general settings for Cider.",
+  "settings.header.general.description": "Adjust the general settings for Apple Music.",
   "settings.option.general.language": "Language",
   // Language optgroups
   "settings.option.general.language.main": "Languages",
@@ -219,7 +219,7 @@
   "settings.option.general.language.unsorted": "Unsorted",
   // Settings - Audio
   "settings.header.audio": "Audio",
-  "settings.header.audio.description": "Adjust the audio settings for Cider.",
+  "settings.header.audio.description": "Adjust the audio settings for Apple Music.",
   "settings.option.audio.quality": "Audio Quality", // Dropdown
   "settings.header.audio.quality.hireslossless": "Hi-Res Lossless",
   "settings.header.audio.quality.hireslossless.description": "up to 24-bit/192 kHz",
@@ -232,7 +232,7 @@
   "settings.option.audio.seamlessTransition": "Seamless Audio Transition", // Toggle
   "settings.option.audio.enableAdvancedFunctionality": "Enable Advanced Functionality", // Toggle
   "settings.option.audio.enableAdvancedFunctionality.description": "Enabling AudioContext functionality will allow for extended audio features like Audio Normalization , Equalizers and Visualizers, however on some systems this may cause stuttering in audio tracks.",
-  "settings.option.audio.enableAdvancedFunctionality.ciderPPE": "Cider Adrenaline Processor™️", // Toggle
+  "settings.option.audio.enableAdvancedFunctionality.ciderPPE": "Apple Music Adrenaline Processor™️", // Toggle
   "settings.option.audio.enableAdvancedFunctionality.ciderPPE.description": "Psychoacoustic Enhancements that makes everything sound both richer and more lively | Designed by Maikiwi.",
   "settings.option.audio.enableAdvancedFunctionality.ciderPPEStrength": "CAP Strength", // Toggle
   "settings.option.audio.enableAdvancedFunctionality.ciderPPEStrength.description": "Changes the strength of the processing done to the audio. (Aggressive may yield undesirable results)",
@@ -244,7 +244,7 @@
   "settings.option.audio.enableAdvancedFunctionality.audioSpatialization.description": "Spatialize audio and make audio more 3-dimensional (note: This is not Dolby Atmos)",
   // Settings - Visual
   "settings.header.visual": "Visual",
-  "settings.header.visual.description": "Adjust the visual settings for Cider.",
+  "settings.header.visual.description": "Adjust the visual settings for Apple Music.",
   "settings.option.visual.windowBackgroundStyle": "Window Background Style", // Toggle
   "settings.header.visual.windowBackgroundStyle.none": "None",
   "settings.header.visual.windowBackgroundStyle.artwork": "Artwork",
@@ -266,24 +266,24 @@
   "settings.header.visual.hardwareAcceleration.webGPU": "WebGPU",
   "settings.header.visual.theme": "Theme",
   // Settings - Visual - Theme name
-  "settings.option.visual.theme.default": "Cider",
+  "settings.option.visual.theme.default": "Apple Music",
   "settings.option.visual.theme.dark": "Dark",
   // Refer to term.disabled for the disabled option
   "settings.option.visual.showPersonalInfo": "Show Personal Info", // Toggle
   // Settings - Lyrics
   "settings.header.lyrics": "Lyrics",
-  "settings.header.lyrics.description": "Adjust the lyrics settings for Cider.",
+  "settings.header.lyrics.description": "Adjust the lyrics settings for Apple Music.",
   "settings.option.lyrics.enableMusixmatch": "Enable Musixmatch Lyrics", // Toggle
   "settings.option.lyrics.enableMusixmatchKaraoke": "Enable Karaoke Mode (Musixmatch only)", // Toggle
   "settings.option.lyrics.musixmatchPreferredLanguage": "Musixmatch Translation Preferred Language", // Dropdown
   "settings.option.lyrics.enableYoutubeLyrics": "Enable Youtube Lyrics for Music Videos", // Toggle
   // Settings - Connectivity
   "settings.header.connectivity": "Connectivity",
-  "settings.header.connectivity.description": "Adjust the connectivity settings for Cider.",
+  "settings.header.connectivity.description": "Adjust the connectivity settings for Apple Music.",
   "settings.option.connectivity.discordRPC": "Discord Rich Presence", // Dropdown
   "settings.option.connectivity.playbackNotifications": "Playback Notifications", // Toggle
   // Refer to term.disabled for the disabled option
-  "settings.header.connectivity.discordRPC.cider": "Display as 'Cider'",
+  "settings.header.connectivity.discordRPC.cider": "Display as 'Apple Music'",
   "settings.header.connectivity.discordRPC.appleMusic": "Display as 'Apple Music'",
   "settings.option.connectivity.discordRPC.clearOnPause": "Clear Discord Rich Presence on Pause", // Toggle
   "settings.option.connectivity.lastfmScrobble": "Last.fm Scrobbling", // Option to Connect
@@ -294,7 +294,7 @@
   // Refer to term.connect for the connect button
   // Settings - Experimental
   "settings.header.experimental": "Experimental",
-  "settings.header.experimental.description": "Adjust the experimental settings for Cider.",
+  "settings.header.experimental.description": "Adjust the experimental settings for Apple Music.",
   "settings.option.experimental.compactUI": "Compact UI", // Toggle
   "settings.option.experimental.close_button_hide": "Close Button Should Hide the Application",
   "settings.option.experimental.copy_log": "Copy logs to clipboard",
@@ -323,8 +323,8 @@
   // Settings - Unfinished
   "settings.header.unfinished": "Unfinished",
   // Web Remote
-  "remote.web.title": "Cider Remote",
-  "remote.web.description": "Scan the QR code to pair your phone up with this Cider instance",
+  "remote.web.title": "Apple Music Remote",
+  "remote.web.description": "Scan the QR code to pair your phone up with this Apple Music instance",
   // About
-  "about.thanks": "Major thanks to the Cider Collective Team and all of our contributors."
+  "about.thanks": "Major thanks to the Apple Music Collective Team and all of our contributors."
 }

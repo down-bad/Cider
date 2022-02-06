@@ -7,7 +7,7 @@
   "i18n.authors": "@down-bad",
 
   // App info
-  "app.name": "Cider",
+  "app.name": "Apple Music",
 
   "date.format": "${d} ${m}, ${y}",
 
@@ -108,7 +108,7 @@
   "term.copyright": "Copyright",
   "term.rightsReserved": "Όλα τα δικαιώματα διατηρούνται.",
   "term.sponsor": "Χορήγησε αυτό το έργο",
-  "term.ciderTeam": "Ομάδα Cider",
+  "term.ciderTeam": "Ομάδα Apple Music",
   "term.developer": "Προγραμματιστής",
   "term.socialTeam": "Κοινωνική Ομάδα",
   "term.contributors": "Συνεισφέροντες",
@@ -135,8 +135,8 @@
   "error.noResults.description": "Δοκιμάστε μια νέα αναζήτηση.",
 
   //Podcasts
-  "podcast.followOnCider": "Ακολούθηση στο Cider",
-  "podcast.followedOnCider": "Ακολουθείτε στο Cider",
+  "podcast.followOnCider": "Ακολούθηση στο Apple Music",
+  "podcast.followedOnCider": "Ακολουθείτε στο Apple Music",
   "podcast.subscribeOnItunes": "Συνδρομή στο iTunes",
   "podcast.subscribedOnItunes": "Συνδρομητής στο iTunes",
   "podcast.itunesStore": "iTunes Store",
@@ -186,7 +186,7 @@
 
   // Settings - General
   "settings.header.general": "Γενικά",
-  "settings.header.general.description": "Προσαρμογή γενικών ρυθμίσεων για το Cider.",
+  "settings.header.general.description": "Προσαρμογή γενικών ρυθμίσεων για το Apple Music.",
   "settings.option.general.language": "Γλώσσα",
 
   // Language optgroups
@@ -196,7 +196,7 @@
   
   // Settings - Audio
   "settings.header.audio": "Ήχος",
-  "settings.header.audio.description": "Προσαρμογή ρυθμίσεων ήχου για το Cider.",
+  "settings.header.audio.description": "Προσαρμογή ρυθμίσεων ήχου για το Apple Music.",
   "settings.option.audio.quality": "Ποιότητα Ήχου", // Dropdown
   "settings.header.audio.quality.high": "Υψηλή",
   "settings.header.audio.quality.low": "Χαμηλή",
@@ -210,7 +210,7 @@
   "settings.option.audio.enableAdvancedFunctionality.audioSpatialization.description": "Πιο τρισδιάστατος και χωρικοποιημένος ήχος (σημείωση: Αυτό δεν είναι Dolby Atmos)",
   // Settings - Visual
   "settings.header.visual": "Οπτικά",
-  "settings.header.visual.description": "Προσαρμογή οπτικών ρυθμίσεων για το Cider.",
+  "settings.header.visual.description": "Προσαρμογή οπτικών ρυθμίσεων για το Apple Music.",
   "settings.option.visual.windowBackgroundStyle": "Στυλ Φόντου Παραθύρου", // Toggle
   "settings.header.visual.windowBackgroundStyle.none": "Κανένα",
   "settings.header.visual.windowBackgroundStyle.artwork": "Εξώφυλλο",
@@ -235,7 +235,7 @@
 
   // Settings - Lyrics
   "settings.header.lyrics": "Στίχοι",
-  "settings.header.lyrics.description": "Προσαρμογή ρυθμίσεων στίχων για το Cider.",
+  "settings.header.lyrics.description": "Προσαρμογή ρυθμίσεων στίχων για το Apple Music.",
   "settings.option.lyrics.enableMusixmatch": "Ενεργοποίηση Στίχων Musixmatch", // Toggle
   "settings.option.lyrics.enableMusixmatchKaraoke": "Ενεργοποίηση Λειτουργίας Καραόκε (Musixmatch μόνο)", // Toggle
   "settings.option.lyrics.musixmatchPreferredLanguage": "Προτιμώμενη Γλώσσα Μετάφρασης Musixmatch", // Dropdown
@@ -243,11 +243,11 @@
 
   // Settings - Connectivity
   "settings.header.connectivity": "Σύνδεση",
-  "settings.header.connectivity.description": "Προσαρμογή ρυθμίσεων σύνδεσης για το Cider.",
+  "settings.header.connectivity.description": "Προσαρμογή ρυθμίσεων σύνδεσης για το Apple Music.",
   "settings.option.connectivity.discordRPC": "Discord Rich Presence", // Dropdown
   "settings.option.connectivity.playbackNotifications": "Ειδοποιήσεις Αναπαραγωγής", // Toggle
   // Refer to term.disabled for the disabled option
-  "settings.header.connectivity.discordRPC.cider": "Εμφάνιση ως 'Cider'",
+  "settings.header.connectivity.discordRPC.cider": "Εμφάνιση ως 'Apple Music'",
   "settings.header.connectivity.discordRPC.appleMusic": "Εμφάνιση ως 'Apple Music'",
   "settings.option.connectivity.discordRPC.clearOnPause": "Εκκαθάριση του Discord Rich Presence στην Παύση", // Toggle
   "settings.option.connectivity.lastfmScrobble": "LastFM Scrobbling", // Option to Connect
@@ -259,10 +259,10 @@
 
   // Settings - Experimental
   "settings.header.experimental": "Πειραματικές",
-  "settings.header.experimental.description": "Προσαρμογή πειραματικών ρυθμίσεων για το Cider.",
+  "settings.header.experimental.description": "Προσαρμογή πειραματικών ρυθμίσεων για το Apple Music.",
   "settings.option.experimental.compactUI": "Συμπαγής Διεπαφή", // Toggle
   "settings.option.experimental.closeButtonBehaviour": "Συμπεριφορά Κουμπιού Εξόδου",
-  "settings.option.experimental.closeButtonBehaviour.quit": "Έξοδος του Cider",
+  "settings.option.experimental.closeButtonBehaviour.quit": "Έξοδος του Apple Music",
   "settings.option.experimental.closeButtonBehaviour.minimizeTaskbar": "Ελαχιστοποίηση στη γραμμή εργασιών",
   "settings.option.experimental.closeButtonBehaviour.minimizeTray": "Ελαχιστοποίηση στη γωνία γραμμής εργασιών",
   // Refer to term.disabled & term.enabled
@@ -291,9 +291,9 @@
   "settings.header.unfinished": "Ημιτελής",
 
   // Web Remote
-  "remote.web.title": "Cider Remote",
-  "remote.web.description": "Σαρώστε τον κωδικό QR για σύζευξη του Cider με το κινητό σας",
+  "remote.web.title": "Apple Music Remote",
+  "remote.web.description": "Σαρώστε τον κωδικό QR για σύζευξη του Apple Music με το κινητό σας",
 
   //About
-  "about.thanks": "Μεγάλα ευχαριστώ στην Ομάδα Cider Collective και σε όλους τους συνεισφέροντές μας."
+  "about.thanks": "Μεγάλα ευχαριστώ στην Ομάδα Apple Music Collective και σε όλους τους συνεισφέροντές μας."
 }

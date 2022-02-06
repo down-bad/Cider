@@ -268,7 +268,7 @@ const app = new Vue({
             userinfo: {
                 "id": "",
                 "attributes": {
-                    "name": "Cider User",
+                    "name": "Apple Music User",
                     "handle": "CiderUser",
                     "artwork": {"url": "./assets/logocut.png"}
                 }
@@ -633,7 +633,7 @@ const app = new Vue({
                 this.chrome.userinfo = {
                     "id": "",
                     "attributes": {
-                        "name": "Cider User",
+                        "name": "Apple Music User",
                         "handle": "CiderUser",
                         "artwork": {"url": "./assets/logocut.png"}
                     }
@@ -3687,7 +3687,7 @@ document.addEventListener('keydown', function (e) {
 
 // Hang Timer
 app.hangtimer = setTimeout(() => {
-    if (confirm("Cider is not responding. Reload the app?")) {
+    if (confirm("Apple Music is not responding. Reload the app?")) {
         window.location.reload()
     }
 }, 10000)
