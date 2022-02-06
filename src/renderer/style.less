@@ -1126,32 +1126,34 @@ body[platform="darwin"] .app-chrome .app-chrome-item > .window-controls > div.cl
   width: 100%;
 }
 
-.app-chrome .app-chrome-item > .app-playback-controls .song-name {
-  font-weight: 600;
-  text-align: center;
-  font-size: 13px;
-  height: 1.3em;
-  line-height: 1.3em;
-  white-space: nowrap;
-  max-width: 360px;
+.app-chrome .app-chrome-item > .app-playback-controls {
+  .song-name {
+    font-weight: 600;
+    text-align: center;
+    font-size: 13px;
+    height: 1.3em;
+    line-height: 1.3em;
+    white-space: nowrap;
+    max-width: 360px;
 
-  .song-name-normal {
-    height: inherit;
-  }
-
-  &.song-artist-marquee {
-    > marquee {
-      //margin-bottom: -3px;
+    .song-name-normal {
+      height: inherit;
     }
-  }
 
-  .explicit-icon {
-    background-image: url("./assets/explicit.svg");
-    height: 9px;
-    width: 13px;
-    filter: contrast(0);
-    background-repeat: no-repeat;
-    margin-left: 3px;
+    &.song-artist-marquee {
+      > marquee {
+        //margin-bottom: -3px;
+      }
+    }
+
+    .explicit-icon {
+      background-image: url("./assets/explicit.svg");
+      height: 9px;
+      width: 13px;
+      filter: contrast(0);
+      background-repeat: no-repeat;
+      margin-left: 3px;
+    }
   }
 }
 

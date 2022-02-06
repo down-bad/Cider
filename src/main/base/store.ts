@@ -6,7 +6,7 @@ export class Store {
 
     private defaults: any = {
         "general": {
-            "close_button_hide": true,
+            "close_button_hide": false,
             "open_on_startup": false,
             "discord_rpc": 1, // 0 = disabled, 1 = enabled as Cider, 2 = enabled as Apple Music
             "discord_rpc_clear_on_pause": true,
@@ -28,7 +28,7 @@ export class Store {
             "volume": 1,
             "lastVolume": 1,
             "muted": false,
-            "quality": "256",
+            "quality": "HIGH",
             "seamless_audio": true,
             "normalization": false,
             "ciderPPE": false,

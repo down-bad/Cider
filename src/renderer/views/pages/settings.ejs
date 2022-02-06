@@ -35,8 +35,8 @@
                     <div class="md-option-segment md-option-segment_auto">
                         <select class="md-select" style="width:180px;" v-model="app.cfg.audio.quality"
                                 v-on:change="changeAudioQuality">
-                            <option value="256">{{$root.getLz('settings.header.audio.quality.high')}}</option>
-                            <option value="64">{{$root.getLz('settings.header.audio.quality.low')}}</option>
+                            <option value="HIGH">{{$root.getLz('settings.header.audio.quality.high')}} ({{$root.getLz('settings.header.audio.quality.high.description')}})</option>
+                            <option value="STANDARD">{{$root.getLz('settings.header.audio.quality.standard')}} ({{$root.getLz('settings.header.audio.quality.standard.description')}})</option>
                         </select>
                     </div>
                 </div>
@@ -590,25 +590,25 @@
 </script>
 
 <script>
-	Vue.component('cider-settings', {
-		template: "#cider-settings",
-		props: [],
-		data: function () {
-			return {
-				app: this.$root,
+    Vue.component('cider-settings', {
+        template: "#cider-settings",
+        props: [],
+        data: function () {
+            return {
+                app: this.$root,
                 themes: ipcRenderer.sendSync("get-themes")
-			}
-		},
-		mounted: function () {
-			if (app.cfg.lastfm.enabled) {
-				const element = document.getElementById('lfmConnect');
-				if (element) {
-					element.innerHTML = `Disconnect\n<p style="font-size: 8px"><i>(Authed: ${app.cfg.lastfm.auth_token})</i></p>`;
-					element.onclick = app.LastFMDeauthorize;
-				}
-			}
-		},
-		methods: {
+            }
+        },
+        mounted: function () {
+            if (app.cfg.lastfm.enabled) {
+                const element = document.getElementById('lfmConnect');
+                if (element) {
+                    element.innerHTML = `Disconnect\n<p style="font-size: 8px"><i>(Authed: ${app.cfg.lastfm.auth_token})</i></p>`;
+                    element.onclick = app.LastFMDeauthorize;
+                }
+            }
+        },
+        methods: {
             copyLogs() {
                 ipcRenderer.send('fetch-log')
                 notyf.success(app.getLz('term.share.success'));
@@ -646,8 +646,8 @@
 			sendDataToMTT: function () {
 			    	ipcRenderer.invoke('setStoreValue', 'general.close_behavior', app.cfg.general.close_behavior);
                 //  setStoreValue does not change plugin store values somehow
-                    ipcRenderer.invoke('update-store-mtt', app.cfg.general.close_behavior);
-			}
-		}
-	})
+                ipcRenderer.invoke('update-store-mtt', app.cfg.general.close_behavior);
+            }
+        }
+    })
 </script>
