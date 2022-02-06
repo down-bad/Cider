@@ -142,14 +142,6 @@
             {{ $root.getLz("app.name") }}
           </div>
         </button>
-        <!-- <button class="usermenu-item" @click="appRoute('remote-pair')">
-                    <div class="row nopadding">
-                        <div class="col nopadding">
-                            <span class="usermenu-item-icon"><%- include("../svg/smartphone.svg") %></span>
-                            <span class="usermenu-item-name">{{$root.getLz('action.showWebRemoteQR')}}</span>
-                        </div>
-                    </div>
-                </button> -->
         <button
           class="usermenu-item"
           v-if="cfg.advanced.AudioContext"
@@ -162,10 +154,6 @@
             $root.getLz("term.audioSettings")
           }}</span>
         </button>
-        <!-- <button class="usermenu-item" @click="appRoute('about')">
-                    <span class="usermenu-item-icon"><%- include("../svg/info.svg") %></span>
-                    <span class="usermenu-item-name">{{$root.getLz('term.about')}}</span>
-                </button> -->
         <button class="usermenu-item" @click="appRoute('settings')">
           <span class="usermenu-item-icon"
             ><%- include("../svg/settings.svg") %></span

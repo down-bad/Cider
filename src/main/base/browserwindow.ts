@@ -42,7 +42,6 @@ export class BrowserWindow {
                 "pages/apple-curator",
                 "pages/artist",
                 "pages/search",
-                "pages/about",
                 "pages/library-videos",
                 "components/mediaitem-artwork",
                 "components/artwork-material",

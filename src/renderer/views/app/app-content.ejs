@@ -27,12 +27,6 @@
             <apple-account-settings></apple-account-settings>
         </template>
     </transition>
-    <!-- About -->
-    <transition name="wpfade">
-        <template v-if="page == 'about'">
-            <about-page></about-page>
-        </template>
-    </transition>
     <!-- Artist Page -->
     <transition name="wpfade">
         <template v-if="page == 'artist-page' && artistPage.data.attributes">
