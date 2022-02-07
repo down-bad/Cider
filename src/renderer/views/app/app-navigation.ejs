@@ -12,11 +12,6 @@
             </div>
             <lyrics-view v-if="drawer.panel == 'lyrics'" :time="lyriccurrenttime" :lyrics="lyrics"
                          :richlyrics="richlyrics"></lyrics-view>
-            <div v-if="drawer.panel == 'lyrics'" class="lyric-footer">
-                <button class="md-btn" @click="modularUITest(!fullscreenLyrics)">{{fullscreenLyrics ?
-                    $root.getLz('term.defaultView'): $root.getLz('term.fullscreenView')}}
-                </button>
-            </div>
         </div>
     </transition>
     <transition name="drawertransition">
