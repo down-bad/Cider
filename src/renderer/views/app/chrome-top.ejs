@@ -73,9 +73,12 @@
                                     <div class="separator" style="display: inline-block;">{{"—"}}</div>
                                     {{(mk.nowPlayingItem["attributes"]["albumName"]) ?
                                     (mk.nowPlayingItem["attributes"]["albumName"]) : "" }}
+                                </div>
+                                <div class="song-artist item-navigate" style="display: inline-block"
+                                    v-if="mk.nowPlayingItem['attributes']['releaseDate'] != ''">
                                     <div class="separator" style="display: inline-block;">{{"—"}}</div>
                                     {{(mk.nowPlayingItem["attributes"]["releaseDate"]) ?
-                                    (mk.nowPlayingItem["attributes"]["releaseDate"]) : "" }}
+                                    (mk.nowPlayingItem["attributes"]["releaseDate"].split("T")[0]) : "" }}
                                 </div>
                             </div>
                         </div>
