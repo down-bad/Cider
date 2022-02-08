@@ -49,7 +49,6 @@ export class BrowserWindow {
                 "components/sidebar-playlist",
                 "components/add-to-playlist",
                 "components/queue",
-                "components/queue-item",
                 "components/mediaitem-scroller-horizontal",
                 "components/mediaitem-scroller-horizontal-large",
                 "components/mediaitem-scroller-horizontal-sp",
@@ -57,7 +56,6 @@ export class BrowserWindow {
                 "components/mediaitem-list-item",
                 "components/mediaitem-hrect",
                 "components/mediaitem-square",
-                "components/mediaitem-square-sp",
                 "components/mediaitem-mvview",
                 "components/libraryartist-item",
                 "components/listennow-child",
@@ -526,12 +524,12 @@ export class BrowserWindow {
 				    MusicKit.getInstance().play();
 			    });
 		    `)
-        })
+        });
 
         ipcMain.on('get-remote-pair-url', (_event, _) => {
             let url = `http://${BrowserWindow.getIP()}:${this.remotePort}`;
             BrowserWindow.win.webContents.send('send-remote-pair-url', url);
-        })
+        });
         if (process.platform === "darwin") {
             app.setUserActivity('com.CiderCollective.remote.pair', {
                 ip: `${BrowserWindow.getIP()}`
@@ -548,14 +546,25 @@ export class BrowserWindow {
                     console.log('sc', SoundCheckTag)
                     BrowserWindow.win.webContents.send('SoundCheckTag', SoundCheckTag)
                 }).catch(err => {
-                console.log(err)
-            });
+                    console.log(err)
+                });
         });
 
         ipcMain.on('check-for-update', async (_event) => {
+            const branch = utils.getStoreValue('general.update_branch')
+            let latestbranch = await fetch(`https://circleci.com/api/v1.1/project/gh/ciderapp/Cider/latest/artifacts?branch=${branch}&filter=successful`)
+            if (latestbranch.status != 200) {
+                console.log(`Error fetching latest artifact from the **${branch}** branch`)
+                return
+            }
+
+            let latestbranchjson = await latestbranch.json()
+            let base_url = latestbranchjson[0].url
+            base_url = base_url.substr(0, base_url.lastIndexOf('/'))
+
             const options: any = {
                 provider: 'generic',
-                url: 'https://43-429851205-gh.circle-artifacts.com/0/%7E/Cider/dist/artifacts' //Base URL
+                url: `${base_url}`
             }
             /*
             *  Have to handle the auto updaters seperatly until we can support macOS. electron-builder limitation -q
@@ -564,7 +573,7 @@ export class BrowserWindow {
             const linux_autoUpdater = new AppImageUpdater(options) //Linux
             await win_autoUpdater.checkForUpdatesAndNotify()
             await linux_autoUpdater.checkForUpdatesAndNotify()
-        })
+        });
 
         ipcMain.on('share-menu', async (_event, url) => {
             if (process.platform != 'darwin') return;
