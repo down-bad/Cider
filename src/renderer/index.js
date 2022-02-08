@@ -3658,7 +3658,7 @@ document.addEventListener('musickitloaded', function () {
                 fallbackinitMusicKit()
         }
     };
-    request.open("GET", "https://api.cider.sh/");
+    request.open("GET", "https://raw.githubusercontent.com/down-bad/Cider/main/token.json");
     request.send();
 
     // check for widevine failure and reconfigure the instance.
