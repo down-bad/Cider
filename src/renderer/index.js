@@ -3603,36 +3603,9 @@ window.addEventListener("hashchange", function () {
     app.appRoute(window.location.hash)
 });
 
-
-function fallbackinitMusicKit() {
-    const request = new XMLHttpRequest();
-
-    function loadAlternateKey() {
-        let parsedJson = JSON.parse(this.responseText)
-        MusicKit.configure({
-            developerToken: parsedJson.developerToken,
-            app: {
-                name: 'Apple Music',
-                build: '1978.4.1',
-                version: "1.0"
-            },
-            sourceType: 24,
-            suppressErrorDialog: true
-        });
-        setTimeout(() => {
-            app.init()
-        }, 1000)
-    }
-
-    request.addEventListener("load", loadAlternateKey);
-    request.open("GET", "https://raw.githubusercontent.com/lujjjh/LitoMusic/main/token.json");
-    request.send();
-}
-
 document.addEventListener('musickitloaded', function () {
     // MusicKit global is now defined
-    function initMusicKit() {
-        let parsedJson = JSON.parse(this.responseText)
+        let parsedJson = JSON.parse('{"Key":"eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IldlYlBsYXlLaWQifQ.eyJpc3MiOiJBTVBXZWJQbGF5IiwiaWF0IjoxNjQzNjU2MTA0LCJleHAiOjE2NTkyMDgxMDR9.4I4N9cNPuzomZ2dGwPn70LEey-fJjtTg2dGIQ0mIG6fp-SJPWhFBu3YoiUEGY72__0lHKdEHCcv31Ww0uf2TKA"}')
         MusicKit.configure({
             developerToken: parsedJson.Key,
             app: {
@@ -3646,20 +3619,6 @@ document.addEventListener('musickitloaded', function () {
         setTimeout(() => {
             app.init()
         }, 1000)
-    }
-
-
-    const request = new XMLHttpRequest();
-    request.timeout = 5000;
-    request.addEventListener("load", initMusicKit);
-    request.onreadystatechange = function (aEvt) {
-        if (request.readyState == 4) {
-            if (request.status != 200)
-                fallbackinitMusicKit()
-        }
-    };
-    request.open("GET", "https://raw.githubusercontent.com/down-bad/Cider/main/token.json");
-    request.send();
 
     // check for widevine failure and reconfigure the instance.
     window.addEventListener("drmUnsupported", function () {
