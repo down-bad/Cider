@@ -3431,21 +3431,6 @@ const app = new Vue({
                 element.onclick = app.LastFMDeauthorize;
             });
         },
-        // parseSCTagToRG: function (tag) {
-        //     let soundcheck = tag.split(" ")
-        //     let numbers = []
-        //     for (item of soundcheck) {
-        //         numbers.push(parseInt(item, 16))
-
-        //     }
-        //     numbers.shift()
-        //     let gain = Math.log10((Math.max(numbers[0], numbers[1]) ?? 1000) / 1000.0) * -10
-        //     let peak = Math.max(numbers[6], numbers[7]) / 32768.0
-        //     return {
-        //         gain: gain,
-        //         peak: peak
-        //     }
-        // },
         fullscreen(flag) {
             if (flag) {
                 ipcRenderer.send('setFullScreen', true);
