@@ -3655,7 +3655,7 @@ document.addEventListener('musickitloaded', function () {
     // MusicKit global is now defined
         let parsedJson = JSON.parse('{"Key":"eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IldlYlBsYXlLaWQifQ.eyJpc3MiOiJBTVBXZWJQbGF5IiwiaWF0IjoxNjQzNjU2MTA0LCJleHAiOjE2NTkyMDgxMDR9.4I4N9cNPuzomZ2dGwPn70LEey-fJjtTg2dGIQ0mIG6fp-SJPWhFBu3YoiUEGY72__0lHKdEHCcv31Ww0uf2TKA"}')
         MusicKit.configure({
-            developerToken: parsedJson.token,
+            developerToken: parsedJson.Key,
             app: {
                 name: 'Apple Music',
                 build: '1978.4.1',
