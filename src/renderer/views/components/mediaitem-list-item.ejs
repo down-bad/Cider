@@ -19,7 +19,7 @@
                     <button @click="addToLibrary()" v-if="!addedToLibrary && (showIndex == false ||(showIndex == true && showIndexPlaylist != false))">
                         <div class="svg-icon" :style="{'--color': 'var(--keyColor)', '--url': 'url(./assets/feather/plus.svg)'}"></div>
                     </button>
-                    <button v-else @click="playTrack()" style="width: 44px;margin-left: -11px;">
+                    <button v-else-if='!(showArtwork == true && (showIndex == false ||(showIndex == true && showIndexPlaylist != false)))' @click="playTrack()" style="width: 44px;margin-left: -11px;">
                         <%- include("../svg/play.svg") %>
                     </button>
                 </div>
@@ -531,7 +531,7 @@
                                 array[j] = temp;
                             }
                         }
-                        app.mk.setQueue({ [truekind]: [item.attributes.playParams.id ?? item.id] }).then(function () {
+                        app.mk.setQueue({ [truekind]: [item.attributes.playParams.id ?? item.id] , parameters : {l : this.app.mklang} }).then(function () {
                             app.mk.play().then(function () {
                                 var playlistId = id
                                 function getPlaylist(id, isLibrary) {

@@ -142,18 +142,6 @@
             {{ $root.getLz("app.name") }}
           </div>
         </button>
-        <button
-          class="usermenu-item"
-          v-if="cfg.advanced.AudioContext"
-          @click="modals.audioSettings = true"
-        >
-          <span class="usermenu-item-icon"
-            ><%- include("../svg/headphones.svg") %></span
-          >
-          <span class="usermenu-item-name">{{
-            $root.getLz("term.audioSettings")
-          }}</span>
-        </button>
         <button class="usermenu-item" @click="appRoute('settings')">
           <span class="usermenu-item-icon"
             ><%- include("../svg/settings.svg") %></span
@@ -216,22 +204,50 @@
             @click="mk.skipToNextItem()"
           ></button>
         </div>
-        <div class="app-chrome-item">
-          <button
-            class="playback-button--small repeat"
-            v-if="mk.repeatMode == 0"
-            @click="mk.repeatMode = 1"
-          ></button>
-          <button
-            class="playback-button--small repeat repeatOne"
-            @click="mk.repeatMode = 2"
-            v-else-if="mk.repeatMode == 1"
-          ></button>
-          <button
-            class="playback-button--small repeat active"
-            @click="mk.repeatMode = 0"
-            v-else-if="mk.repeatMode == 2"
-          ></button>
+        <sidebar-playlist v-for="item in getPlaylistFolderChildren('p.playlistsroot')" :item="item">
+        </sidebar-playlist>
+    </div>
+    <transition name="wpfade">
+        <div class="usermenu-container" v-if="chrome.menuOpened">
+            <div class="usermenu-body">
+                <button class="app-sidebar-button" style="width:100%">
+
+                    <img class="sidebar-user-icon" loading="lazy"
+                         :src="getMediaItemArtwork(chrome.hideUserInfo ? 'http://localhost:9000/assets/logocut.png' : (chrome.userinfo.attributes['artwork'] ? chrome.userinfo.attributes['artwork']['url'] : ''), 26)"/>
+
+                    <div class="sidebar-user-text" v-if="!chrome.hideUserInfo">
+                        <template v-if="chrome.userinfo.id || mk.isAuthorized">
+                            <div class="fullname text-overflow-elipsis">{{ (chrome.userinfo != null &&
+                                chrome.userinfo.attributes != null) ? (chrome.userinfo.attributes.name ?? "") :
+                                ""
+                                }}
+                            </div>
+                            <div class="handle-text text-overflow-elipsis">{{
+                                (chrome.userinfo != null && chrome.userinfo.attributes != null) ?
+                                (chrome.userinfo.attributes.handle ?? "") : ""
+                                }}
+                            </div>
+                        </template>
+                        <template v-else>
+                            <div @click="mk.authorize()">
+                                {{$root.getLz('term.login')}}
+                            </div>
+                        </template>
+                    </div>
+                    <div class="sidebar-user-text" v-else>
+                        {{$root.getLz('app.name')}}
+                    </div>
+                </button>
+                <button class="usermenu-item" @click="appRoute('settings')">
+                    <span class="usermenu-item-icon"><%- include("../svg/settings.svg") %></span>
+                    <span class="usermenu-item-name">{{$root.getLz('term.settings')}}</span>
+                </button>
+                <button class="usermenu-item" @click="unauthorize()">
+                    <span class="usermenu-item-icon"
+                                style="right:2.5px;"><%- include("../svg/log-out.svg") %></span>
+                    <span class="usermenu-item-name">{{$root.getLz('term.logout')}}</span>
+                </button>
+            </div>
         </div>
       </div>
       <div class="app-chrome-item volume">

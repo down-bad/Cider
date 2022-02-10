@@ -113,7 +113,8 @@ const app = new Vue({
                     "name": "0",
                     "genre": "0",
                     "releaseDate": "0",
-                    "durationInMillis": "0"
+                    "durationInMillis": "0",
+                    "dateAdded": "0"
                 },
                 sorting: "name",
                 sortOrder: "asc",
@@ -313,12 +314,12 @@ const app = new Vue({
             return text
             // stringTemplateParser('my name is {{name}} and age is {{age}}', {name: 'Tom', age:100})
         },
-        setLz(lang) {
+        async setLz(lang) {
             if (lang == "") {
                 lang = this.cfg.general.language
             }
             this.lz = ipcRenderer.sendSync("get-i18n", lang)
-            this.mklang = this.MKJSLang()
+            this.mklang = await this.MKJSLang()
         },
         getLz(message) {
             if (this.lz[message]) {
@@ -334,7 +335,8 @@ const app = new Vue({
                 "name": app.getLz('term.sortBy.name'),
                 "genre": app.getLz('term.sortBy.genre'),
                 "releaseDate": app.getLz('term.sortBy.releaseDate'),
-                "durationInMillis": app.getLz('term.sortBy.duration')
+                "durationInMillis": app.getLz('term.sortBy.duration'),
+                "dateAdded": app.getLz('term.sortBy.dateAdded')
             }
 
             app.$data.library.albums.sortingOptions = {
@@ -574,7 +576,7 @@ const app = new Vue({
             this.mk._services.timing.mode = 0
             this.platform = ipcRenderer.sendSync('cider-platform');
 
-            this.mklang = this.MKJSLang()
+            this.mklang = await this.MKJSLang()
 
             try {
                 // Set profile name
@@ -641,7 +643,8 @@ const app = new Vue({
                     let kind = lastItem.attributes.playParams.kind;
                     let truekind = (!kind.endsWith("s")) ? (kind + "s") : kind;
                     app.mk.setQueue({
-                        [truekind]: [lastItem.attributes.playParams.id]
+                        [truekind]: [lastItem.attributes.playParams.id],
+                        parameters : {l : app.mklang}
                     })
                     app.mk.mute()
                     setTimeout(() => {
@@ -685,7 +688,7 @@ const app = new Vue({
 
             ipcRenderer.on('play', function(_event, mode, id) {
               if (mode !== 'url'){
-                self.mk.setQueue({[mode]: id}).then(() => {
+                self.mk.setQueue({[mode]: id , parameters : {l : self.mklang}}).then(() => {
                     app.mk.play()
                 })
                 
@@ -1298,7 +1301,7 @@ const app = new Vue({
             }
         },
         async getNowPlayingItemDetailed(target) {
-            let u = await app.mkapi(app.mk.nowPlayingItem.playParams.kind, (app.mk.nowPlayingItem.songId == -1), (app.mk.nowPlayingItem.songId != -1) ? app.mk.nowPlayingItem.songId : app.mk.nowPlayingItem["id"], {"include[songs]": "albums,artists", l : this.mklang});
+            let u = await app.mkapi(app.mk.nowPlayingItem.playParams.kind, (app.mk.nowPlayingItem.songId == -1), (app.mk.nowPlayingItem.songId != -1) ? app.mk.nowPlayingItem.songId : app.mk.nowPlayingItem["id"], {"include[songs]": "albums,artists", l : app.mklang});
             app.searchAndNavigate(u.data.data[0], target)
         },
         async searchAndNavigate(item, target) {
@@ -1532,16 +1535,23 @@ const app = new Vue({
         searchLibrarySongs() {
             let self = this
             let prefs = this.cfg.libraryPrefs.songs
-
+            let albumAdded = self.library?.albums?.listing?.map(function(i){return {[i.id]: i.attributes?.dateAdded}})
+            let startTime = new Date().getTime()
             function sortSongs() {
                 // sort this.library.songs.displayListing by song.attributes[self.library.songs.sorting] in descending or ascending order based on alphabetical order and numeric order
                 // check if song.attributes[self.library.songs.sorting] is a number and if so, sort by number if not, sort by alphabetical order ignoring case
                 self.library.songs.displayListing.sort((a, b) => {
                     let aa = a.attributes[prefs.sort]
                     let bb = b.attributes[prefs.sort]
-                    if (self.library.songs.sorting == "genre") {
+                    if (prefs.sort == "genre") {
                         aa = a.attributes.genreNames[0]
                         bb = b.attributes.genreNames[0]
+                    }
+                    if (prefs.sort == "dateAdded"){
+                        let albumida =  a.relationships?.albums?.data[0]?.id ?? '1970-01-01T00:01:01Z'
+                        let albumidb =  b.relationships?.albums?.data[0]?.id ?? '1970-01-01T00:01:01Z'
+                        aa = startTime - new Date(((albumAdded.find(i => i[albumida]))?? [])[albumida] ?? '1970-01-01T00:01:01Z').getTime()
+                        bb = startTime - new Date(((albumAdded.find(i => i[albumidb]))?? [])[albumidb] ?? '1970-01-01T00:01:01Z').getTime()
                     }
                     if (aa == null) {
                         aa = ""
@@ -1794,7 +1804,7 @@ const app = new Vue({
                     "fields[catalog]": "artistUrl,albumUrl",
                     "fields[songs]": "artistName,artistUrl,artwork,contentRating,editorialArtwork,name,playParams,releaseDate,url",
                     limit: 100,
-                    l: this.mklang
+                    l: self.mklang
                 }
                 const safeparams = {
                     "platform": "web",
@@ -1898,7 +1908,7 @@ const app = new Vue({
                     "fields[catalog]": "artistUrl,albumUrl",
                     "fields[albums]": "artistName,artistUrl,artwork,contentRating,editorialArtwork,name,playParams,releaseDate,url",
                     limit: 100,
-                    l: this.mklang
+                    l: self.mklang
                 }
                 const safeparams = {
                     platform: "web",
@@ -2008,7 +2018,7 @@ const app = new Vue({
                     // "fields[catalog]": "artistUrl,albumUrl",
                     // "fields[artists]": "artistName,artistUrl,artwork,contentRating,editorialArtwork,name,playParams,releaseDate,url",
                     limit: 100,
-                    l: this.mklang
+                    l: self.mklang
                 }
                 const safeparams = {
                     include: "catalog",
@@ -2104,7 +2114,7 @@ const app = new Vue({
             this.library.songs.meta = response.data.meta
         },
         async getLibraryAlbums() {
-            let response = await this.mkapi("albums", true, "", {limit: 100,l : this.mklang}, {includeResponseMeta: !0})
+            let response = await this.mkapi("albums", true, "", {limit: 100, l : this.mklang}, {includeResponseMeta: !0})
             this.library.albums.listing = response.data.data
             this.library.albums.meta = response.data.meta
         },
@@ -2660,7 +2670,8 @@ const app = new Vue({
                     });
                 } else {
                     this.mk.setQueue({
-                        [truekind]: [id]
+                        [truekind]: [id],
+                        parameters : {l : this.mklang}
                     }).then(function (queue) {
                         MusicKit.getInstance().play()
                     })
@@ -2700,7 +2711,8 @@ const app = new Vue({
                     app.mk.stop().then(() => {
                         if (item) {
                             app.mk.setQueue({
-                                [item.attributes.playParams.kind ?? item.type]: item.attributes.playParams.id ?? item.id
+                                [item.attributes.playParams.kind ?? item.type]: item.attributes.playParams.id ?? item.id,
+                                parameters : {l : app.mklang}
                             }).then(function () {
                                 app.mk.play().then(() => {
                                     if (app.mk.shuffleMode == 1) {
@@ -2734,7 +2746,8 @@ const app = new Vue({
                     app.mk.stop().then(() => {
                         if (truekind == "playlists" && (id.startsWith("p.") || id.startsWith("pl.u"))) {
                             app.mk.setQueue({
-                                [item.attributes.playParams.kind ?? item.type]: item.attributes.playParams.id ?? item.id
+                                [item.attributes.playParams.kind ?? item.type]: item.attributes.playParams.id ?? item.id,
+                                parameters : {l : app.mklang}
                             }).then(function () {
                                 app.mk.changeToMediaAtIndex(app.mk.queue._itemIDs.indexOf(item.id) ?? 1).then(function () {
                                     if ((app.showingPlaylist && app.showingPlaylist.id == id)) {
@@ -2773,7 +2786,8 @@ const app = new Vue({
                             })
                         } else {
                             this.mk.setQueue({
-                                [truekind]: [id]
+                                [truekind]: [id],
+                                parameters : {l : this.mklang}
                             }).then(function (queue) {
                                 if (item && ((queue._itemIDs[childIndex] != item.id))) {
                                     childIndex = queue._itemIDs.indexOf(item.id)
@@ -3089,7 +3103,7 @@ const app = new Vue({
         quickPlay(query) {
             let self = this
             MusicKit.getInstance().api.search(query, {limit: 2, types: 'songs'}).then(function (data) {
-                MusicKit.getInstance().setQueue({song: data["songs"]['data'][0]["id"]}).then(function (queue) {
+                MusicKit.getInstance().setQueue({song: data["songs"]['data'][0]["id"], parameters : {l : app.mklang}}).then(function (queue) {
                     MusicKit.getInstance().play()
                     setTimeout(() => {
                         self.$forceUpdate()
@@ -3547,16 +3561,36 @@ const app = new Vue({
             if (!this.isDev) // disable in dev mode to keep my sanity
             MusicKitInterop.playPause();
         },
-        MKJSLang(){
+        async MKJSLang(){
             let u = this.cfg.general.language;
-            let langcodes = ['af', 'sq', 'ar', 'eu', 'bg', 'be', 'ca', 'zh', 'zh-tw', 'zh-cn', 'zh-hk', 'zh-sg', 'hr', 'cs', 'da', 'nl', 'nl-be', 'en', 'en-us', 'en-eg', 'en-au', 'en-gb', 'en-ca', 'en-nz', 'en-ie', 'en-za', 'en-jm', 'en-bz', 'en-tt', 'en-001', 'et', 'fo', 'fa', 'fi', 'fr', 'fr-ca', 'gd', 'de', 'de-ch', 'el', 'he', 'hi', 'hu', 'is', 'id', 'it', 'ja', 'ko', 'lv', 'lt', 'mk', 'mt', 'no', 'nb', 'nn', 'pl', 'pt-br', 'pt', 'rm', 'ro', 'ru', 'sr', 'sk', 'sl', 'es', 'es-mx', 'es-419', 'sv', 'th', 'ts', 'tn', 'tr', 'uk', 'ur', 've', 'vi', 'xh', 'yi', 'zu', 'ms', 'iw', 'lo', 'tl', 'kk', 'ta', 'te', 'bn', 'ga', 'ht', 'la', 'pa', 'sa'];
-            let sellang = "en"
-            if (u && langcodes.includes(u.toLowerCase().replace('_', "-"))) {
-                sellang = ((u.toLowerCase()).replace('_', "-"))
-            } else if (u && u.includes('_') && langcodes.includes(((u.toLowerCase()).replace('_', "-")).split("-")[0])) {
-                sellang = ((u.toLowerCase()).replace('_', "-")).split("-")[0]
+            // use MusicKit.getInstance or crash
+            try {
+                item = await MusicKit.getInstance().api.v3.music(`v1/storefronts/${app.mk.storefrontId}`)
+                let langcodes = item.data.data[0].attributes.supportedLanguageTags;
+                if (langcodes) langcodes = langcodes.map(function (u) { return u.toLowerCase() })
+                console.log(langcodes)
+                let sellang = ""
+                if (u && langcodes.includes(u.toLowerCase().replace('_', "-"))) {
+                    sellang = ((u.toLowerCase()).replace('_', "-"))
+                } else if (u && u.includes('_') && langcodes.includes(((u.toLowerCase()).replace('_', "-")).split("-")[0])) {
+                    sellang = ((u.toLowerCase()).replace('_', "-")).split("-")[0]
+                }
+                if (sellang == "") sellang = (item.data.data[0].attributes.defaultLanguageTag).toLowerCase()
+                console.log(sellang)
+                return await sellang
             }
-            return sellang
+            catch (err) {
+                console.log('locale err', err)
+                let langcodes = ['af', 'sq', 'ar', 'eu', 'bg', 'be', 'ca', 'zh', 'zh-tw', 'zh-cn', 'zh-hk', 'zh-sg', 'hr', 'cs', 'da', 'nl', 'nl-be', 'en', 'en-us', 'en-eg', 'en-au', 'en-gb', 'en-ca', 'en-nz', 'en-ie', 'en-za', 'en-jm', 'en-bz', 'en-tt', 'en-001', 'et', 'fo', 'fa', 'fi', 'fr', 'fr-ca', 'gd', 'de', 'de-ch', 'el', 'he', 'hi', 'hu', 'is', 'id', 'it', 'ja', 'ko', 'lv', 'lt', 'mk', 'mt', 'no', 'nb', 'nn', 'pl', 'pt-br', 'pt', 'rm', 'ro', 'ru', 'sr', 'sk', 'sl', 'es', 'es-mx', 'es-419', 'sv', 'th', 'ts', 'tn', 'tr', 'uk', 'ur', 've', 'vi', 'xh', 'yi', 'zu', 'ms', 'iw', 'lo', 'tl', 'kk', 'ta', 'te', 'bn', 'ga', 'ht', 'la', 'pa', 'sa'];
+                let sellang = "en"
+                if (u && langcodes.includes(u.toLowerCase().replace('_', "-"))) {
+                    sellang = ((u.toLowerCase()).replace('_', "-"))
+                } else if (u && u.includes('_') && langcodes.includes(((u.toLowerCase()).replace('_', "-")).split("-")[0])) {
+                    sellang = ((u.toLowerCase()).replace('_', "-")).split("-")[0]
+                }
+                if (sellang.startsWith("en") && this.mk.storefrontId != "en-us") sellang = "en-gb"
+                return await sellang
+            }          
         }
     }
 })
