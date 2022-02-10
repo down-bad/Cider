@@ -61,6 +61,7 @@ export class BrowserWindow {
                 "components/listennow-child",
                 "components/mediaitem-mvview-sp",
                 "components/animatedartwork-view",
+                "components/listitem-horizontal",
                 "components/lyrics-view",
                 "components/fullscreen",
                 "components/miniplayer",

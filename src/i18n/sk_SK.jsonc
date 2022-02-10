@@ -1,10 +1,10 @@
-{ // Base File
+{
 
   // i18n Info
-  "i18n.languageName": "Slovenčina (SK)",        // name of language in native language
+  "i18n.languageName": "Slovenčina (SK)", // name of language in native language
   "i18n.languageNameEnglish": "Slovak (SK)", // name of language in English
   "i18n.category": "main", // main = real language, fun = fun community languages
-  "i18n.authors": "@jurosic", // Authors, if you contribute to this file feel free to add your name seperated with a space
+  "i18n.authors": "@jurosic-JurajJanosik", // Authors, if you contribute to this file feel free to add your name seperated with a space
 
   // App info
   "app.name": "Cider",
@@ -19,6 +19,7 @@
   "notification.updatingLibrarySongs": "Aktualizujem pesničky v knižnici...",
   "notification.updatingLibraryAlbums": "Aktualizujem albumy v knižnici...",
   "notification.updatingLibraryArtists": "Aktualizujem tvorcov v knižnici...",
+  
   // Terms
   "term.appleInc": "Apple Inc.",
   "term.appleMusic": "Apple Music",
@@ -31,7 +32,7 @@
   "term.logout": "Odhlásiť",
   "term.login": "Prihlásiť",
   "term.about": "About",
-  "term.privateSession": "Osobný Session",
+  "term.privateSession": "Skuromn Počúvanie",
   "term.queue": "Poradie",
   "term.search": "Vyhládavať",
   "term.library": "Knižnica",
@@ -76,8 +77,8 @@
   "term.viewAs.coverArt": "Náhľadovka",
   "term.viewAs.list": "List",
   "term.size": "Velkosť",
-  "term.size.normal": "Normal",
-  "term.size.compact": "Compact",
+  "term.size.normal": "Normálny",
+  "term.size.compact": "Kompaktný",
   "term.enable": "Zapnúť",
   "term.disable": "Vypnúť",
   "term.enabled": "Zapnuté",
@@ -125,7 +126,6 @@
   "term.menu": "Menu",
   "term.check": "Skontrolovať",
   "term.aboutArtist": "Viac o {{artistName}}", // e.g. 'About Doja Cat'
-  "term.updateCider": "Aktualizovať Cider",
 
   // Home
   "home.title": "Domov",
@@ -136,13 +136,14 @@
   "home.madeForYou": "Robené Pre Teba",
   "home.friendsListeningTo": "Kamaráti počúvajú",
   "home.followedArtists": "Sledovaný Tvorcovia",
+
   // Errors
   "error.appleMusicSubRequired": "Apple Music potrebuje subscription.",
   "error.connectionError": "Pri pripojovaní ku Apple Music sa vyskytol problém",
   "error.noResults": "Žiadne výsledky",
   "error.noResults.description": "Skús nové vyhľádavanie",
 
-  //Podcasts
+  // Podcasts
   "podcast.followOnCider": "Sleduj na Cider",
   "podcast.followedOnCider": "Sledované na Cider",
   "podcast.subscribeOnItunes": "Odoberaj na iTunes",
@@ -199,7 +200,7 @@
   "action.update": "Aktualizovať",
 
   // Settings - General
-  "settings.header.general": "všeobecné",
+  "settings.header.general": "Všeobecné",
   "settings.header.general.description": "Zmeniť všeobecné nastavenia pre Cider.",
   "settings.option.general.language": "Jazyk",
 
@@ -207,6 +208,9 @@
   "settings.option.general.language.main": "Jazyky",
   "settings.option.general.language.fun": "Zábanve Jazyky",
   "settings.option.general.language.unsorted": "Nepotriedené",
+
+  // Update Cider
+  "settings.option.general.updateCider": "Aktualizovať Cider",
 
   // Settings - Audio
   "settings.header.audio": "Zvuk",
@@ -218,10 +222,17 @@
   "settings.option.audio.seamlessTransition": "Hladký Prevod Zvuku", // Toggle
   "settings.option.audio.enableAdvancedFunctionality": "Zapnút Pokročilé Nastavenia Zvuku", // Toggle
   "settings.option.audio.enableAdvancedFunctionality.description": "Zapnutie AudioContext funkcionality dovolí rozšírené funkcie zvuku ako Zvuková Normalizávia , Equalizéry a Visualízery, ale na niektorých systémoch to može spôsobiť problémy so zvukom.",
+  "settings.option.audio.enableAdvancedFunctionality.ciderPPE": "Cider Adrenaline Processor™️", // Toggle
+  "settings.option.audio.enableAdvancedFunctionality.ciderPPE.description": "Psychoakustické Vylepšenia ktoré urobia zvuk viac bohatý a živý | Urobil Maikiwi.",
+  "settings.option.audio.enableAdvancedFunctionality.ciderPPEStrength": "CAP Sila", // Toggle
+  "settings.option.audio.enableAdvancedFunctionality.ciderPPEStrength.description": "Zmení silu CAP (Agresívná môže spôsobiť nežiadané výsledky)",
+  "settings.option.audio.enableAdvancedFunctionality.ciderPPEStrength.standard": "Štandardná",
+  "settings.option.audio.enableAdvancedFunctionality.ciderPPEStrength.aggressive": "Agresívná",
   "settings.option.audio.enableAdvancedFunctionality.audioNormalization": "Normalízacia Zvuku", // Toggle
   "settings.option.audio.enableAdvancedFunctionality.audioNormalization.description": "Normalizuje silu zvuku v pesničkách pre hľadší počúvací zážitok",
   "settings.option.audio.enableAdvancedFunctionality.audioSpatialization": "Priestorový Zvuk", // Toggle
   "settings.option.audio.enableAdvancedFunctionality.audioSpatialization.description": "Priestorový zvuk urobí zvuk 3-dimenzionálny (poznámka: Toto nie je Dolby Atmos)",
+  
   // Settings - Visual
   "settings.header.visual": "Visuálne",
   "settings.header.visual.description": "Zmenit Visuálne nastavenia pre Cider.",
@@ -244,6 +255,12 @@
   "settings.option.visual.hardwareAcceleration.description": "Vyžaduje Reštart",
   "settings.header.visual.hardwareAcceleration.default": "Predvoľba",
   "settings.header.visual.hardwareAcceleration.webGPU": "WebGPU",
+  "settings.header.visual.theme": "Theme",
+
+  // Settings - Visual - Theme name
+  "settings.option.visual.theme.default": "Cider",
+  "settings.option.visual.theme.dark": "Dark",
+
   // Refer to term.disabled for the disabled option
   "settings.option.visual.showPersonalInfo": "Zobraziť osobné informácie", // Toggle
 
@@ -276,8 +293,10 @@
   "settings.header.experimental.description": "Zmeniť experimentálne nastavenia pre Cider.",
   "settings.option.experimental.compactUI": "Compact UI", // Toggle
   "settings.option.experimental.close_button_hide": "Zatvoriť by malo skriť aplikáciu",
-  // Refer to term.disabled & term.enabled
+  "settings.option.experimental.compactUI": "Kompaktný UI", // Toggle
+  "settings.option.experimental.close_button_hide": "Zatvaranie aplikácie ju malo skriť",
 
+  // Refer to term.disabled & term.enabled
   // Spatialization Menu
   "spatial.notTurnedOn": "Priestorový Zvuk je vypnutý. Prosím najprv ho zapnite.",
   "spatial.spatialProperties": "Špeciálne Nastavenia",
