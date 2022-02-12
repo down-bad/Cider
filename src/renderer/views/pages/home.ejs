@@ -4,11 +4,11 @@
             <div class="row">
                 <div class="col">
                     <div class="row">
-                        <div class="col nopadding">
+                        <div class="col">
                             <h3>{{app.getLz('home.recentlyPlayed')}}</h3>
                         </div>
-                        <div class="col-auto nopadding flex-center">
-                            <button class="cd-btn-seeall" @click="seeAllHistory()">{{app.getLz('term.history')}}</button>
+                        <div class="col-auto flex-center">
+                            <button class="cd-btn-seeall" @click="seeAllHistory()">{{app.getLz('term.seeAll')}}</button>
                         </div>
                     </div>
                     <div class="well artistfeed-well">
@@ -21,10 +21,10 @@
                 </div>
                 <div class="col">
                     <div class="row">
-                        <div class="col nopadding">
+                        <div class="col">
                             <h3>{{app.getLz('home.artistsFeed')}}</h3>
                         </div>
-                        <div class="col-auto nopadding flex-center">
+                        <div class="col-auto flex-center">
                             <button class="cd-btn-seeall" @click="app.appRoute('artist-feed')">{{app.getLz('term.seeAll')}}</button>
                         </div>
                     </div>
@@ -62,10 +62,10 @@
             <div class="row" v-if="friendsListeningTo && friendsListeningTo.length > 0">
                 <div class="col">
                     <div class="row">
-                        <div class="col nopadding">
+                        <div class="col">
                             <h3>{{app.getLz('home.friendsListeningTo')}}</h3>
                         </div>
-                        <div class="col-auto nopadding flex-center">
+                        <div class="col-auto flex-center">
                             <button class="cd-btn-seeall" @click="app.showSocialListeningTo()">{{app.getLz('term.seeAll')}}</button>
                         </div>
                     </div>
