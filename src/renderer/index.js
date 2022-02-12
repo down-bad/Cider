@@ -54,6 +54,7 @@ const app = new Vue({
     el: "#app",
     store: store,
     data: {
+        version: ipcRenderer.sendSync("get-version"),
         appMode: "player",
         ipcRenderer: ipcRenderer,
         cfg: ipcRenderer.sendSync("getStore"),
@@ -321,8 +322,20 @@ const app = new Vue({
             this.lz = ipcRenderer.sendSync("get-i18n", lang)
             this.mklang = await this.MKJSLang()
         },
-        getLz(message) {
+        getLz(message, options = {}) {
             if (this.lz[message]) {
+                if(options["count"] ) {
+                    if (typeof this.lz[message] === "object"){
+                        let type = window.fastPluralRules.getPluralFormNameForCardinalByLocale(this.cfg.general.language.replace("_","-"),options["count"]);
+                        return this.lz[message][type] ?? ((this.lz[message])[Object.keys(this.lz[message])[0]] ?? this.lz[message])
+                    } else {
+                        // fallback English plural forms ( old i18n )
+                        if (options["count"] > 1) {
+                            return this.lz[message+ "s"] ?? this.lz[message]} else { return this.lz[message] ?? this.lz[message+ "s"]}
+                    }
+                } else if(typeof this.lz[message] === "object") {
+                    return (this.lz[message])[Object.keys(this.lz[message])[0]]
+                }
                 return this.lz[message]
             } else {
                 return message
@@ -1208,6 +1221,9 @@ const app = new Vue({
             if (route.indexOf("/") == -1) {
                 this.page = route
                 window.location.hash = this.page
+                // if (this.page == "settings") {
+                //     this.version
+                // }
                 return
             }
             let hash = route.split("/")
@@ -2102,7 +2118,10 @@ const app = new Vue({
                     let hours = Math.floor(time / 3600)
                     let mins = Math.floor(time / 60) % 60
                     let secs = time % 60
-                    return app.showingPlaylist.relationships.tracks.data.length + " " + app.getLz('term.tracks') + ", " + ((hours > 0) ? (hours + (" " + ((hours > 1) ? app.getLz('term.time.hours') + ", " : app.getLz('term.time.hour') + ", "))) : "") + ((mins > 0) ? (mins + ((mins > 1) ? " " + app.getLz('term.time.minutes') + ", " : " " + app.getLz('term.time.minute') + ", ")) : "") + secs + ((secs > 1) ? " " + app.getLz('term.time.seconds') + "." : " " + app.getLz('term.time.second') + ".");
+                    return app.showingPlaylist.relationships.tracks.data.length + " " + app.getLz('term.tracks', options = {count : app.showingPlaylist.relationships.tracks.data.length}) + ", " 
+                    + ((hours > 0) ? (hours + (" " + (app.getLz('term.time.hour', options = {count : hours}) + ", "))) : "") + 
+                    ((mins > 0) ? (mins + (" " + app.getLz('term.time.minute', options = {count : mins}) + ", ")) : "") + 
+                    secs + (" " + app.getLz('term.time.second', options = {count : secs}) + ".");
                 } else return ""
             } catch (err) {
                 return ""
@@ -2263,12 +2282,12 @@ const app = new Vue({
             }
         },
         loadAMLyrics() {
-            const songID = (this.mk.nowPlayingItem != null) ? this.mk.nowPlayingItem["_songId"] ?? -1 : -1;
+            const songID = (this.mk.nowPlayingItem != null) ? this.mk.nowPlayingItem["_songId"] ?? (this.mk.nowPlayingItem["songId"] ?? -1) : -1;
             // this.getMXM( trackName, artistName, 'en', duration);
             if (songID != -1) {
-                MusicKit.getInstance().api.lyric(songID)
+                this.mk.api.v3.music(`v1/catalog/${this.mk.storefrontId}/songs/${songID}/lyrics`)
                     .then((response) => {
-                        this.lyricsMediaItem = response.attributes["ttml"]
+                        this.lyricsMediaItem = response.data?.data[0]?.attributes["ttml"]
                         this.parseTTML()
                     })
             }
@@ -2292,7 +2311,6 @@ const app = new Vue({
             })
             notyf.success(app.getLz('action.removeFromLibrary.success'))
         },
-
         async loadYTLyrics() {
             const track = (this.mk.nowPlayingItem != null) ? this.mk.nowPlayingItem.title ?? '' : '';
             const artist = (this.mk.nowPlayingItem != null) ? this.mk.nowPlayingItem.artistName ?? '' : '';
@@ -2361,7 +2379,7 @@ const app = new Vue({
             const track = encodeURIComponent((this.mk.nowPlayingItem != null) ? this.mk.nowPlayingItem.title ?? '' : '');
             const artist = encodeURIComponent((this.mk.nowPlayingItem != null) ? this.mk.nowPlayingItem.artistName ?? '' : '');
             const time = encodeURIComponent((this.mk.nowPlayingItem != null) ? (Math.round((this.mk.nowPlayingItem.attributes["durationInMillis"] ?? -1000) / 1000) ?? -1) : -1);
-            const id = encodeURIComponent((this.mk.nowPlayingItem != null) ? app.mk.nowPlayingItem._songId ?? '' : '');
+            const id = encodeURIComponent((this.mk.nowPlayingItem != null) ? app.mk.nowPlayingItem._songId ?? (app.mk.nowPlayingItem["songId"] ?? '') : '');
             let lrcfile = "";
             let richsync = [];
             const lang = app.cfg.lyrics.mxm_language //  translation language
@@ -3052,6 +3070,7 @@ const app = new Vue({
                     data = data.data.data[0];
                     if (data != null && data !== "" && data.attributes != null && data.attributes.artwork != null) {
                         this.currentArtUrl = (data["attributes"]["artwork"]["url"] ?? '').replace('{w}', 50).replace('{h}', 50);
+                        ipcRenderer.send('updateRPCImage', this.currentArtUrl ?? '');
                         try {
                             document.querySelector('.app-playback-controls .artwork').style.setProperty('--artwork', `url("${this.currentArtUrl}")`);
                         } catch (e) {
@@ -3360,7 +3379,7 @@ const app = new Vue({
                             "icon": "./assets/feather/share.svg",
                             "name": app.getLz('action.share'),
                             "action": function () {
-                                app.mkapi(app.mk.nowPlayingItem.attributes?.playParams?.kind ?? app.mk.nowPlayingItem.type ?? 'songs', false, app.mk.nowPlayingItem._songId ?? app.mk.nowPlayingItem.id ?? '').then(u => {
+                                app.mkapi(app.mk.nowPlayingItem.attributes?.playParams?.kind ?? app.mk.nowPlayingItem.type ?? 'songs', false, app.mk.nowPlayingItem._songId ?? (app.mk.nowPlayingItem.songId ?? app.mk.nowPlayingItem.id) ?? '').then(u => {
                                     app.copyToClipboard((u.data.data.length && u.data.data.length > 0) ? u.data.data[0].attributes.url : u.data.data.attributes.url)
                                 })
                             }
@@ -3369,7 +3388,7 @@ const app = new Vue({
                             "icon": "./assets/feather/share.svg",
                             "name": `${app.getLz('action.share')} (song.link)`,
                             "action": function () {
-                                app.mkapi(app.mk.nowPlayingItem.attributes?.playParams?.kind ?? app.mk.nowPlayingItem.type ?? 'songs', false, app.mk.nowPlayingItem._songId ?? app.mk.nowPlayingItem.id ?? '').then(u => {
+                                app.mkapi(app.mk.nowPlayingItem.attributes?.playParams?.kind ?? app.mk.nowPlayingItem.type ?? 'songs', false, app.mk.nowPlayingItem._songId ?? (app.mk.nowPlayingItem.songId ?? app.mk.nowPlayingItem.id) ?? '').then(u => {
                                     app.songLinkShare((u.data.data.length && u.data.data.length > 0) ? u.data.data[0].attributes.url : u.data.data.attributes.url)
                                 })
                             }
@@ -3406,7 +3425,7 @@ const app = new Vue({
             app.cfg.lastfm.auth_token = "";
             app.cfg.lastfm.enabled = false;
             const element = document.getElementById('lfmConnect');
-            element.innerHTML = getLz('term.connect');
+            element.innerHTML = app.getLz('term.connect');
             element.onclick = app.LastFMAuthenticate;
         },
         LastFMAuthenticate() {
@@ -3570,7 +3589,7 @@ const app = new Vue({
                 } else if (u && u.includes('_') && langcodes.includes(((u.toLowerCase()).replace('_', "-")).split("-")[0])) {
                     sellang = ((u.toLowerCase()).replace('_', "-")).split("-")[0]
                 }
-                if (sellang.startsWith("en") && this.mk.storefrontId != "en-us") sellang = "en-gb"
+                if (sellang.startsWith("en") && this.mk.storefrontId != "us") sellang = "en-gb"
                 return await sellang
             }          
         }
