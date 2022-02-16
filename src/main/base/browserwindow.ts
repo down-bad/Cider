@@ -45,6 +45,7 @@ export class BrowserWindow {
                 "pages/search",
                 "pages/library-videos",
                 "pages/remote-pair",
+                "pages/themes-github",
                 "components/mediaitem-artwork",
                 "components/artwork-material",
                 "components/menu-panel",
@@ -212,11 +213,11 @@ export class BrowserWindow {
                     res.send("Stopped")
                     break;
                 case "next":
-                    BrowserWindow.win.webContents.executeJavaScript("if (MusicKit.getInstance().queue.nextPlayableItemIndex != -1) {MusicKit.getInstance().changeToMediaAtIndex(MusicKit.getInstance().queue.nextPlayableItemIndex);}")
+                    BrowserWindow.win.webContents.executeJavaScript("if (MusicKit.getInstance().queue.nextPlayableItemIndex != -1 && MusicKit.getInstance().queue.nextPlayableItemIndex != null) {MusicKit.getInstance().changeToMediaAtIndex(MusicKit.getInstance().queue.nextPlayableItemIndex);}")
                     res.send("Next")
                     break;
                 case "previous":
-                    BrowserWindow.win.webContents.executeJavaScript("MusicKit.getInstance().skipToPreviousItem()")
+                    BrowserWindow.win.webContents.executeJavaScript("if (MusicKit.getInstance().queue.previousPlayableItemIndex != -1 && MusicKit.getInstance().queue.previousPlayableItemIndex != null) {MusicKit.getInstance().changeToMediaAtIndex(MusicKit.getInstance().queue.previousPlayableItemIndex);}")
                     res.send("Previous")
                     break;
                 default: {
@@ -425,7 +426,7 @@ export class BrowserWindow {
                             description: themeJson.description || themeDescription,
                             path: themePath,
                             file: theme,
-                            test: join(themePath, "theme.json")
+                            github_repo: themeJson.github_repo || ""
                         });
                     } else {
                         themeObjects.push({
@@ -433,7 +434,7 @@ export class BrowserWindow {
                             description: themeDescription,
                             path: themePath,
                             file: theme,
-                            test: join(themePath, "theme.json")
+                            github_repo: ""
                         });
                     }
                 }

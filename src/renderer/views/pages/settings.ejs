@@ -45,7 +45,7 @@
                         {{$root.getLz('settings.option.audio.seamlessTransition')}}
                     </div>
                     <div class="md-option-segment md-option-segment_auto">
-                        <input type="checkbox" v-model="app.cfg.audio.seamless_audio" v-on:change="app.mk._bag.features['seamless-audio-transitions'] = app.cfg.audio.seamless_audio"/>
+                        <input type="checkbox" v-model="app.cfg.audio.seamless_audio" v-on:change="app.mk._bag.features['seamless-audio-transitions'] = app.cfg.audio.seamless_audio" switch/>
                     </div>
                 </div>
             </div>
@@ -63,8 +63,8 @@
                             <option value="dark.less">{{$root.getLz('settings.option.visual.theme.dark')}}</option>
                             <option v-for="theme in themes" :value="theme.file">{{ theme.name }}</option>
                         </select>
-                        <button class="md-btn md-btn-small md-btn-block" @click="installTheme()" style="margin-top: 8px">
-                            {{$root.getLz('settings.option.visual.theme.github.download')}}
+                        <button class="md-btn md-btn-small md-btn-block" @click="gitHubExplore()" style="margin-top: 8px">
+                            {{$root.getLz('settings.option.visual.theme.github.explore')}}
                         </button>
                     </div>
                 </div>
@@ -577,7 +577,7 @@
                         <input type="checkbox" v-model="app.cfg.general.close_button_hide" switch/>
                     </div>
                 </div>
-                <div class="md-option-line">
+                <div class="md-option-line update-check">
                     <div class="md-option-segment">
                         {{$root.getLz('settings.option.experimental.copy_log')}} 
                     </div>
@@ -612,21 +612,8 @@
             }
         },
         methods: {
-            installTheme() {
-                let self = this
-                bootbox.prompt(app.getLz('settings.prompt.visual.theme.github.URL'), (result) => {
-                    if (result) {
-                        ipcRenderer.once("theme-installed", (event, arg) => {
-                            if (arg.success) {
-                                self.themes = ipcRenderer.sendSync("get-themes")
-                                notyf.success(app.getLz('settings.notyf.visual.theme.install.success'));
-                            } else {
-                                notyf.error(app.getLz('settings.notyf.visual.theme.install.error'));
-                            }
-                        });
-                        ipcRenderer.invoke("get-github-theme", result)
-                    }
-                });
+            gitHubExplore() {
+                app.appRoute("themes-github")
             },
             copyLogs() {
                 ipcRenderer.send('fetch-log')
@@ -666,6 +653,15 @@
 			    	ipcRenderer.invoke('setStoreValue', 'general.close_behavior', app.cfg.general.close_behavior);
                 //  setStoreValue does not change plugin store values somehow
                 ipcRenderer.invoke('update-store-mtt', app.cfg.general.close_behavior);
+            },
+            checkIfUpdateDisabled() {
+                if (ipcRenderer.sendSync('disable-update')) {
+                    let updateFields = document.getElementsByClassName('update-check');
+                    for (var i=0; i < updateFields.length; i++) {
+                        updateFields[i].style = "opacity: 0.5; pointer-events: none;";
+                        updateFields[i].title = "Not available on this type of build";
+                    }
+                }
             }
         }
     })

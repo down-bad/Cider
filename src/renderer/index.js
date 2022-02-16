@@ -555,7 +555,7 @@ const app = new Vue({
                 }
             ).then(() => {
                 if (this.page == 'playlist_' + this.showingPlaylist.id) {
-                    this.getPlaylistFromID(this.showingPlaylist.id)
+                    this.getPlaylistFromID(this.showingPlaylist.id, true)
                 }
             })
         },
@@ -750,7 +750,6 @@ const app = new Vue({
                 // app.getNowPlayingArtwork(42); 
                 app.getNowPlayingArtworkBG(32);
                 app.loadLyrics();
-                app.losslessBadge();
 
                 // Playback Notifications
                 if (this.cfg.general.playbackNotifications && !document.hasFocus() && a.artistName && a.artwork && a.name) {
@@ -964,7 +963,7 @@ const app = new Vue({
                 console.log(res)
                 self.appRoute(`playlist_` + res.id);
                 self.showingPlaylist = [];
-                self.getPlaylistFromID(app.page.substring(9))
+                self.getPlaylistFromID(app.page.substring(9), true)
                 self.playlists.listing.push({
                     id: res.id,
                     attributes: {
@@ -1059,9 +1058,9 @@ const app = new Vue({
             response = response.data.data[0]
             let self = this
             let playlistId = response.id
-            if (!transient) this.playlists.loadingState = 0
+            this.playlists.loadingState = (!transient) ? 0 : 1
             this.showingPlaylist = response
-            if (!response.relationships.tracks.next) {
+            if (!response.relationships?.tracks?.next) {
                 this.playlists.loadingState = 1
                 return
             }
@@ -1137,7 +1136,7 @@ const app = new Vue({
             let max = this.mk.currentPlaybackDuration
             let value = (val - min) / (max - min) * 100
             return {
-                'background': ('linear-gradient(to right, var(--keyColor) 0%, var(--keyColor) ' + value + '%, #333 ' + value + '%, #333 100%)')
+                'background': ('linear-gradient(to right, var(--songProgressColor) 0%, var(--songProgressColor) ' + value + '%, var(--songProgressBackground) ' + value + '%, var(--songProgressBackground) 100%)')
             }
         },
         async getRecursive(response) {
@@ -1316,7 +1315,7 @@ const app = new Vue({
                 app.mk.seekToTime(0);
             } else {
                 app.prevButtonBackIndicator = false;
-                app.mk.skipToPreviousItem()
+                app.skipToPreviousItem()
             }
         },
         async getNowPlayingItemDetailed(target) {
@@ -1473,14 +1472,14 @@ const app = new Vue({
                     if (kind == "appleCurator") {
                         app.appleCurator = a.data.data[0]
                     } else {
-                        this.getPlaylistContinuous(a)
+                        this.getPlaylistContinuous(a, true)
                     }
                 }
             } finally {
                 if (kind == "appleCurator") {
                     app.appleCurator = a.data.data[0]
                 } else {
-                    this.getPlaylistContinuous(a)
+                    this.getPlaylistContinuous(a, true)
                 }
             }
             ;
@@ -2241,26 +2240,6 @@ const app = new Vue({
             })
             notyf.success(app.getLz('action.removeFromLibrary.success'))
         },
-        
-        async losslessBadge() {
-            const songID = (this.mk.nowPlayingItem != null) ? this.mk.nowPlayingItem["_songId"] ?? (this.mk.nowPlayingItem["songId"] ?? -1) : -1;
-            if (app.cfg.advanced.ciderPPE && songID != -1) {
-                /**let extendedAssets = await app.mk.api.song(songID, {extend : 'extendedAssetUrls'})
-                 if (extendedAssets.attributes.audioTraits.includes('lossless')) {*/
-                    app.mk.nowPlayingItem['attributes']['lossless'] = true
-                    CiderAudio.audioNodes.llpwEnabled = 1
-                    console.log("[Cider][Audio] PPE Kicking in...");
-                    CiderAudio.hierarchical_loading();
-                /**}
-                else {
-                    CiderAudio.audioNodes.llpwEnabled = 0
-                }    */
-            }
-            
-            else {
-                CiderAudio.audioNodes.llpwEnabled = 0
-            }
-        },
         async loadYTLyrics() {
             const track = (this.mk.nowPlayingItem != null) ? this.mk.nowPlayingItem.title ?? '' : '';
             const artist = (this.mk.nowPlayingItem != null) ? this.mk.nowPlayingItem.artistName ?? '' : '';
@@ -2697,17 +2676,17 @@ const app = new Vue({
                                 })
                             })
                         } else {
-                            this.mk.clearQueue().then(function (_) {
-                                if (app.mk.shuffleMode == 1) {
-                                    shuffleArray(query)
-                                }
-                                app.mk.queue.append(query)
-                                if (childIndex != -1) {
-                                    app.mk.changeToMediaAtIndex(childIndex)
-                                } else {
-                                    app.mk.play()
-                                }
-                            })
+                            app.mk.queue.splice(0, app.mk.queue._itemIDs.length)
+                            if (app.mk.shuffleMode == 1) {
+                                shuffleArray(query)
+                            }
+                            app.mk.queue.append(query)
+                            if (childIndex != -1) {
+                                app.mk.changeToMediaAtIndex(childIndex)
+                            } else {
+                                app.mk.play()
+                            }
+                            
                         }
                     })
                 } else if (parent.startsWith('listitem-hr')) {
@@ -2717,7 +2696,7 @@ const app = new Vue({
                                 [item.attributes.playParams.kind ?? item.type]: item.attributes.playParams.id ?? item.id
                             }).then(function () {
                                 app.mk.play().then(() => {
-                                    const data = JSON.parse(parent.split('listitem-hr')[1] ?? '[]')
+                                    let data = JSON.parse(parent.split('listitem-hr')[1] ?? '[]')
                                     let itemsToPlay = {}
                                     let u = data.map(x => x.id)
                                     try {
@@ -2742,9 +2721,8 @@ const app = new Vue({
                                 })
                             })
                         } else {
-                            const data = JSON.parse(parent.split('listitem-hr')[1] ?? '[]')
+                            let data = JSON.parse(parent.split('listitem-hr')[1] ?? '[]')
                             let itemsToPlay = {}
-                            let u = data.map(x => x.id)
                             data.forEach(item => {
                                 if (!itemsToPlay[item.kind]) {
                                     itemsToPlay[item.kind] = []
@@ -2752,20 +2730,30 @@ const app = new Vue({
                                 itemsToPlay[item.kind].push(item.id)
                             })
                             // loop through itemsToPlay
+                            app.mk.queue.splice(0, app.mk.queue._itemIDs.length)
                             let ind = 0;
                             for (let kind in itemsToPlay) {
                                 let ids = itemsToPlay[kind]
-                                app.mk.clearQueue().then(function () {
-                                    if (ids.length > 0) {
-                                        app.mk.playLater({ [kind + "s"]: itemsToPlay[kind] }).then(function() {
+                                if (ids.length > 0) {
+                                    if (app.mk.queue._itemIDs.length > 0) {
+                                    app.mk.playLater({ [kind + "s"]: itemsToPlay[kind] }).then(function () {
+                                        ind += 1;
+                                        console.log(ind, Object.keys(itemsToPlay).length)
+                                        if (ind >= Object.keys(itemsToPlay).length) {
+                                            app.mk.changeToMediaAtIndex(app.mk.queue._itemIDs.indexOf(item.attributes.playParams.id ?? item.id))
+                                        }
+                                    }
+                                    )} else {
+                                        app.mk.setQueue({ [kind + "s"]: itemsToPlay[kind] }).then(function () {
                                             ind += 1;
-                                            console.log(ind , Object.keys(itemsToPlay).length)
-                                            if(ind >= Object.keys(itemsToPlay).length) {                        
+                                            console.log(ind, Object.keys(itemsToPlay).length)
+                                            if (ind >= Object.keys(itemsToPlay).length) {
                                                 app.mk.changeToMediaAtIndex(app.mk.queue._itemIDs.indexOf(item.attributes.playParams.id ?? item.id))
                                             }
-                                        }
-                                    )}
-                                })
+                                        } 
+                                        )}
+                                }
+                                
                             }
                         }
                     })
@@ -3599,9 +3587,9 @@ const app = new Vue({
             let u = this.cfg.general.language;
             // use MusicKit.getInstance or crash
             try {
-                item = await MusicKit.getInstance().api.v3.music(`v1/storefronts/${app.mk.storefrontId}`)
+                let item = await MusicKit.getInstance().api.v3.music(`v1/storefronts/${app.mk.storefrontId}`)
                 let langcodes = item.data.data[0].attributes.supportedLanguageTags;
-                if (langcodes) langcodes = langcodes.map(function (u) { return u.toLowerCase() })
+                if (langcodes) langcodes = langcodes.map(function (u) { return u.replace(/-Han[s|t]/i, "").toLowerCase() })
                 console.log(langcodes)
                 let sellang = ""
                 if (u && langcodes.includes(u.toLowerCase().replace('_', "-"))) {
@@ -3610,6 +3598,11 @@ const app = new Vue({
                     sellang = ((u.toLowerCase()).replace('_', "-")).split("-")[0]
                 }
                 if (sellang == "") sellang = (item.data.data[0].attributes.defaultLanguageTag).toLowerCase()
+                
+                // Fix weird locales:
+                if (sellang == "iw") sellang = "iw-il"
+                sellang = sellang.replace(/-Han[s|t]/i, "").toLowerCase()
+
                 console.log(sellang)
                 return await sellang
             }
@@ -3628,8 +3621,13 @@ const app = new Vue({
         },
         skipToNextItem(){
             // app.mk.skipToNextItem() is buggy somehow so use this
-            if (this.mk.queue.nextPlayableItemIndex != -1) 
+            if (this.mk.queue.nextPlayableItemIndex != -1 && this.mk.queue.nextPlayableItemIndex != null) 
             this.mk.changeToMediaAtIndex(this.mk.queue.nextPlayableItemIndex);
+        },
+        skipToPreviousItem(){
+            // app.mk.skipToPreviousItem() is buggy somehow so use this
+            if (this.mk.queue.previousPlayableItemIndex != -1 && this.mk.queue.previousPlayableItemIndex != null)
+            this.mk.changeToMediaAtIndex(this.mk.queue.previousPlayableItemIndex);
         }
     }
 })
@@ -3872,6 +3870,12 @@ webGPU().then();
 
 let screenWidth = screen.width;
 let screenHeight = screen.height;
+
+window.onerror = function(error) {
+    console.log(error)
+    bootbox.alert("Error occured: " + error)
+};
+
 
 // Key bind to unjam MusicKit in case it fails: CTRL+F10
 document.addEventListener("keydown", function (event) {
