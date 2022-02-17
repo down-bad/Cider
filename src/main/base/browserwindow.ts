@@ -46,10 +46,12 @@ export class BrowserWindow {
                 "pages/library-videos",
                 "pages/remote-pair",
                 "pages/themes-github",
+                "pages/replay",
                 "components/mediaitem-artwork",
                 "components/artwork-material",
                 "components/menu-panel",
                 "components/sidebar-playlist",
+                "components/audio-controls",
                 "components/add-to-playlist",
                 "components/queue",
                 "components/mediaitem-scroller-horizontal",
@@ -118,6 +120,16 @@ export class BrowserWindow {
         });
         this.options.width = windowState.width;
         this.options.height = windowState.height;
+
+        switch(process.platform) {
+            default:
+
+            break;
+            case "linux":
+                this.options.autoHideMenuBar = true
+                this.options.frame = true
+            break;
+        }
 
         // Start the webserver for the browser window to load
 
@@ -653,7 +665,9 @@ export class BrowserWindow {
         ipcMain.on('get-version', (_event) => {
             _event.returnValue = app.getVersion()
         });
-
+        ipcMain.on('open-appdata', (_event) => {
+            shell.openPath(app.getPath('userData'));
+        });
         /* *********************************************************************************************
          * Window Events
          * **********************************************************************************************/

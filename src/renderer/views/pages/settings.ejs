@@ -42,6 +42,16 @@
                 </div>
                 <div class="md-option-line">
                     <div class="md-option-segment">
+                        {{$root.getLz('term.audioControls')}}
+                    </div>
+                    <div class="md-option-segment md-option-segment_auto">
+                        <button class="md-btn" onclick="app.modals.audioControls = true">
+                            {{$root.getLz('term.audioControls')}}
+                        </button>
+                    </div>
+                </div>
+                <div class="md-option-line">
+                    <div class="md-option-segment">
                         {{$root.getLz('settings.option.audio.seamlessTransition')}}
                     </div>
                     <div class="md-option-segment md-option-segment_auto">
@@ -531,6 +541,36 @@
                     </div>
                 </div>
             </div>
+
+
+
+            <div class="md-option-header">
+                <span>{{$root.getLz('settings.header.debug')}}</span>
+            </div>
+            <div class="settings-option-body">
+                <div class="md-option-line">
+                    <div class="md-option-segment">
+                        {{$root.getLz('settings.option.debug.copy_log')}}
+                    </div>
+                    <div class="md-option-segment md-option-segment_auto">
+                        <button class="md-btn" @click="copyLogs">
+                            {{$root.getLz('action.copy')}}
+                        </button>
+                    </div>
+                </div>
+                <div class="md-option-line">
+                    <div class="md-option-segment">
+                        {{$root.getLz('settings.option.debug.openAppData')}}
+                    </div>
+                    <div class="md-option-segment md-option-segment_auto">
+                        <button class="md-btn" @click="openAppData">
+                            {{$root.getLz('action.open')}}
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+
             <div class="md-option-header">
                 <span>{{$root.getLz('settings.header.experimental')}}</span>
             </div>
@@ -577,16 +617,6 @@
                         <input type="checkbox" v-model="app.cfg.general.close_button_hide" switch/>
                     </div>
                 </div>
-                <div class="md-option-line update-check">
-                    <div class="md-option-segment">
-                        {{$root.getLz('settings.option.experimental.copy_log')}} 
-                    </div>
-                    <div class="md-option-segment md-option-segment_auto">
-                        <button class="md-btn" @click="copyLogs">
-                            {{$root.getLz('action.copy')}} 
-                        </button>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -619,50 +649,45 @@
                 ipcRenderer.send('fetch-log')
                 notyf.success(app.getLz('term.share.success'));
             },
-			getLanguages: function () {
-				let langs = this.$root.lzListing
-				let categories = {
-					"main": [],
-					"fun": [],
-					"unsorted": []
-				}
-				// sort by category if category is undefined or empty put it in "unsorted"
-				for (let i = 0; i < langs.length; i++) {
-					if (langs[i].category === undefined || langs[i].category === "") {
-						categories.unsorted.push(langs[i])
-					} else {
-						categories[langs[i].category].push(langs[i])
-					}
-				}
-				// return
-				return categories
-			},
-			addExperiment(flag) {
-				app.cfg.advanced.experiments.push(flag);
-			},
-			removeExperiment(flag) {
-				app.cfg.advanced.experiments.splice(app.cfg.advanced.experiments.indexOf(flag), 1);
-			},
-			changeAudioQuality: function () {
-				app.mk.bitrate = app.cfg.audio.quality
-			},
-			toggleUserInfo: function () {
-				app.chrome.hideUserInfo = !app.cfg.visual.showuserinfo
-			},
-			sendDataToMTT: function () {
-			    	ipcRenderer.invoke('setStoreValue', 'general.close_behavior', app.cfg.general.close_behavior);
+            openAppData() {
+                ipcRenderer.send('open-appdata')
+            },
+            getLanguages: function () {
+                let langs = this.$root.lzListing
+                let categories = {
+                    "main": [],
+                    "fun": [],
+                    "unsorted": []
+                }
+                // sort by category if category is undefined or empty put it in "unsorted"
+                for (let i = 0; i < langs.length; i++) {
+                    if (langs[i].category === undefined || langs[i].category === "") {
+                        categories.unsorted.push(langs[i])
+                    } else {
+                        categories[langs[i].category].push(langs[i])
+                    }
+                }
+                // return
+                return categories
+            },
+            addExperiment(flag) {
+                app.cfg.advanced.experiments.push(flag);
+            },
+            removeExperiment(flag) {
+                app.cfg.advanced.experiments.splice(app.cfg.advanced.experiments.indexOf(flag), 1);
+            },
+            changeAudioQuality: function () {
+                1
+                app.mk.bitrate = MusicKit.PlaybackBitrate[app.cfg.audio.quality];
+            },
+            toggleUserInfo: function () {
+                app.chrome.hideUserInfo = !app.cfg.visual.showuserinfo
+            },
+            sendDataToMTT: function () {
+                ipcRenderer.invoke('setStoreValue', 'general.close_behavior', app.cfg.general.close_behavior);
                 //  setStoreValue does not change plugin store values somehow
                 ipcRenderer.invoke('update-store-mtt', app.cfg.general.close_behavior);
             },
-            checkIfUpdateDisabled() {
-                if (ipcRenderer.sendSync('disable-update')) {
-                    let updateFields = document.getElementsByClassName('update-check');
-                    for (var i=0; i < updateFields.length; i++) {
-                        updateFields[i].style = "opacity: 0.5; pointer-events: none;";
-                        updateFields[i].title = "Not available on this type of build";
-                    }
-                }
-            }
         }
     })
 </script>

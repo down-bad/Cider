@@ -108,6 +108,7 @@
   "term.fullscreenView": "Fullscreen View",
   "term.defaultView": "Default View",
   "term.audioSettings": "Audio Settings",
+  "term.audioControls": "Audio Controls",
   "term.clearAll": "Clear All",
   "term.recentStations": "Recent Stations",
   "term.language": "Language",
@@ -228,7 +229,7 @@
   "action.copy": "Copy",
   "action.newpreset": "New Preset...", // Equalizer Preset
   "action.deletepreset": "Delete Preset",
-  
+  "action.open": "Open",
   // Settings - General
   "settings.header.general": "General",
   "settings.header.general.description": "Adjust the general settings for Apple Music.",
@@ -249,6 +250,8 @@
   // Settings - Audio
   "settings.header.audio": "Audio",
   "settings.header.audio.description": "Adjust the audio settings for Apple Music.",
+  "settings.option.audio.volumeStep": "Volume Step",
+  "settings.option.audio.maxVolume": "Max Volume",
   "settings.option.audio.quality": "Audio Quality", // Dropdown
   "settings.header.audio.quality.hireslossless": "Hi-Res Lossless",
   "settings.header.audio.quality.hireslossless.description": "up to 24-bit/192 kHz",
@@ -334,13 +337,19 @@
   "settings.option.connectivity.lastfmScrobble.removeFeatured": "Remove featuring artists from song title (Last.fm)",
   "settings.option.connectivity.lastfmScrobble.filterLoop": "Filter looped track (Last.fm)",
   // Refer to term.connect for the connect button
-  
+
+  // Settings - Debug
+  "settings.header.debug": "Debug",
+  "settings.option.debug.copy_log": "Copy logs to clipboard",
+  "settings.option.debug.openAppData": "Open Cider Folder",
+
+
   // Settings - Experimental
   "settings.header.experimental": "Experimental",
   "settings.header.experimental.description": "Adjust the experimental settings for Apple Music.",
   "settings.option.experimental.compactUI": "Compact UI", // Toggle
   "settings.option.experimental.close_button_hide": "Close Button Should Hide the Application",
-  "settings.option.experimental.copy_log": "Copy logs to clipboard",
+
   "settings.option.experimental.inline_playlists": "Inline Playlists and Albums",
   
   // Refer to term.disabled & term.enabled

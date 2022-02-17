@@ -13,6 +13,9 @@
 <transition name="modal">
     <add-to-playlist :playlists="playlists.listing" v-if="modals.addToPlaylist"></add-to-playlist>
 </transition>
+<transition name="modal">
+  <audio-controls v-if="modals.audioControls"></audio-controls>
+</transition>
 <div id="apple-music-video-container">
     <div id="apple-music-video-player-controls">
         <div id="player-exit" title="Close" @click="exitMV()">

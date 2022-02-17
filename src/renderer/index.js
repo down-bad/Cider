@@ -233,6 +233,7 @@ const app = new Vue({
             qrcode: false,
             equalizer: false,
             audioSettings: false,
+            audioControls: false,
             showPlaylist: false,
         },
         socialBadges: {
@@ -272,7 +273,7 @@ const app = new Vue({
         artistPage: () => {
             document.getElementById("app-content").scrollTo(0, 0);
             app.resetState()
-        },
+        }
     },
     methods: {
         songLinkShare(amUrl) {
@@ -1319,8 +1320,15 @@ const app = new Vue({
             }
         },
         async getNowPlayingItemDetailed(target) {
-            let u = await app.mkapi(app.mk.nowPlayingItem.playParams.kind, (app.mk.nowPlayingItem.songId == -1), (app.mk.nowPlayingItem.songId != -1) ? app.mk.nowPlayingItem.songId : app.mk.nowPlayingItem["id"], {"include[songs]": "albums,artists", l : app.mklang});
-            app.searchAndNavigate(u.data.data[0], target)
+            try {
+                let u = await app.mkapi(app.mk.nowPlayingItem.playParams.kind,
+                    (app.mk.nowPlayingItem.songId == -1),
+                    (app.mk.nowPlayingItem.songId != -1) ? app.mk.nowPlayingItem.songId : app.mk.nowPlayingItem["id"],
+                    { "include[songs]": "albums,artists", l: app.mklang });
+                app.searchAndNavigate(u.data.data[0], target)
+            } catch (e) {
+                app.searchAndNavigate(app.mk.nowPlayingItem, target)
+            }
         },
         async searchAndNavigate(item, target) {
             let self = this
@@ -2929,7 +2937,7 @@ const app = new Vue({
                     type += "s"
                 }
                 type = type.replace("library-", "") 
-                let id = item.attributes.playParams.catalogId ?? item.id
+                let id = item.attributes.playParams.catalogId ?? item.attributes.playParams.id ?? item.id
 
                 let index = types.findIndex(function (type) {
                     return type.type == this
@@ -3214,7 +3222,7 @@ const app = new Vue({
                 console.log('setting max volume')
             } else {
                 console.log('volume up')
-                app.mk.volume += app.cfg.audio.volumeStep;
+                app.mk.volume = ((app.mk.volume * 100) + (app.cfg.audio.volumeStep * 100)) / 100
             }
         },
         volumeDown() {
@@ -3223,11 +3231,11 @@ const app = new Vue({
                 console.log('setting volume to 0')
             } else {
                 console.log('volume down')
-                app.mk.volume -= app.cfg.audio.volumeStep;
+                app.mk.volume = ((app.mk.volume * 100) - (app.cfg.audio.volumeStep * 100)) / 100
             }
         },
         volumeWheel(event) {
-            app.checkScrollDirectionIsUp(event) ? app.volumeUp() : app.volumeDown()
+            app.checkScrollDirectionIsUp(event) ? this.volumeUp() : this.volumeDown()
         },
         muteButtonPressed() {
             if (this.cfg.audio.muted) {
