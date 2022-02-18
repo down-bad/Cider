@@ -452,7 +452,7 @@ const app = new Vue({
             history.forward()
         },
         getHTMLStyle() {
-            document.querySelector("html").style.background = "#222";
+            // document.querySelector("html").style.background = "#222";
             document.querySelector("body").classList.add("notransparency")
         },
         resetState() {
@@ -1284,6 +1284,14 @@ const app = new Vue({
                 let params = {
                     extend: "offers,editorialVideo",
                     "views": "appears-on,more-by-artist,related-videos,other-versions,you-might-also-like,video-extras,audio-extras",
+                }
+                if (kind.includes("playlist")){
+                    params["include"] = "tracks";
+                }
+                if (kind.includes("album")){
+                    params["include[albums]"] = "artists"
+                    params["fields[artists]"] = "name,url"
+                    params["fields[albums]"] = "artistName,artistUrl,artwork,contentRating,editorialArtwork,name,playParams,releaseDate,url"
                 }
 
                 if (this.cfg.advanced.experiments.includes('inline-playlists')) {

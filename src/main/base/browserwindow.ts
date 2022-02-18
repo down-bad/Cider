@@ -86,14 +86,15 @@ export class BrowserWindow {
         minHeight: 390,
         frame: false,
         title: "Apple Music",
-        vibrancy: "fullscreen-ui",
+        vibrancy: "dark",
         transparent: process.platform === "darwin",
-        hasShadow: false,
+        hasShadow: true,
         show: false,
-        backgroundColor: "#1E1E1E",
+        // backgroundColor: "#1E1E1E",
         titleBarStyle: 'hidden',
         trafficLightPosition: {x: 15, y: 20},
         webPreferences: {
+            experimentalFeatures: true,
             nodeIntegration: true,
             sandbox: true,
             allowRunningInsecureContent: true,
@@ -125,7 +126,11 @@ export class BrowserWindow {
             default:
 
             break;
+            case "win32":
+                this.options.backgroundColor = "#1E1E1E";
+            break;
             case "linux":
+                this.options.backgroundColor = "#1E1E1E";
                 this.options.autoHideMenuBar = true
                 this.options.frame = true
             break;
