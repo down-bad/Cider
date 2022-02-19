@@ -15,6 +15,19 @@ const MusicKitObjects = {
 	},
 };
 
+const CiderFrontAPI = {
+    Objects: {
+        MenuEntry: function () {
+            this.id = ""
+            this.name = ""
+            this.onClick = ()=>{}
+        }
+    },
+    AddMenuEntry(entry) {
+        app.pluginMenuEntries.push(entry)
+    }
+}
+
 const MusicKitTools = {
 	getHeader() {
 		return new Headers({
@@ -63,6 +76,7 @@ const app = new Vue({
         platform: "",
         mk: {},
         quickPlayQuery: "",
+        pluginMenuEntries: [],
         lz: ipcRenderer.sendSync("get-i18n", "en_US"),
         lzListing: ipcRenderer.sendSync("get-i18n-listing"),
         search: {
@@ -250,7 +264,8 @@ const app = new Vue({
                 items: {},
                 headerItems: {}
             }
-        }
+        },
+        pauseButtonTimer : null
     },
     watch: {
         cfg: {
@@ -779,12 +794,14 @@ const app = new Vue({
                 this.page = "home"
             }
 
+            this.mediaKeyFixes()
+
             setTimeout(() => {
                 this.getSocialBadges()
                 this.getBrowsePage();
                 this.$forceUpdate()
             }, 500)
-
+            ipcRenderer.invoke("renderer-ready", true)
         },
         setTheme(theme = "") {
             console.log(theme)
@@ -1321,8 +1338,11 @@ const app = new Vue({
         prevButton() {
             if (!app.prevButtonBackIndicator && app.mk.nowPlayingItem && app.mk.currentPlaybackTime > 2) {
                 app.prevButtonBackIndicator = true;
+                try{clearTimeout(app.pauseButtonTimer)} catch (e){ }
                 app.mk.seekToTime(0);
+                app.pauseButtonTimer = setTimeout(() => {app.prevButtonBackIndicator = false},3000);
             } else {
+                try{clearTimeout(app.pauseButtonTimer)} catch (e){ }
                 app.prevButtonBackIndicator = false;
                 app.skipToPreviousItem()
             }
@@ -3146,8 +3166,8 @@ const app = new Vue({
         },
         async getRating(item) {
             let type = item.type.slice(-1) === "s" ? item.type : item.type + "s"
-            let id = item.attributes.playParams.catalogId ? item.attributes.playParams.catalogId : item.id
-            if (item.id.startsWith("i.")) {
+            let id = item.attributes?.playParams?.catalogId ? item.attributes.playParams.catalogId : (item.attributes?.playParams?.id ?? item.id)
+            if (item.id != null && (item.id.toString()).startsWith("i.")) {
                 if (!type.startsWith("library-")) {
                     type = "library-" + type
                 }
@@ -3163,8 +3183,8 @@ const app = new Vue({
         },
         love(item) {
             let type = item.type.slice(-1) === "s" ? item.type : item.type + "s"
-            let id = item.attributes.playParams.catalogId ? item.attributes.playParams.catalogId : item.id
-            if (item.id.startsWith("i.")) {
+            let id = item.attributes?.playParams?.catalogId ? item.attributes.playParams.catalogId : (item.attributes?.playParams?.id ?? item.id)
+            if (item.id != null && (item.id.toString()).startsWith("i.")) {
                 if (!type.startsWith("library-")) {
                     type = "library-" + type
                 }
@@ -3184,8 +3204,8 @@ const app = new Vue({
         },
         dislike(item) {
             let type = item.type.slice(-1) === "s" ? item.type : item.type + "s"
-            let id = item.attributes.playParams.catalogId ? item.attributes.playParams.catalogId : item.id
-            if (item.id.startsWith("i.")) {
+            let id = item.attributes?.playParams?.catalogId ? item.attributes.playParams.catalogId : (item.attributes?.playParams?.id ?? item.id)
+            if (item.id != null && (item.id.toString()).startsWith("i.")) {
                 if (!type.startsWith("library-")) {
                     type = "library-" + type
                 }
@@ -3576,9 +3596,6 @@ const app = new Vue({
         closeWindow() {
             ipcRenderer.send('close');
         },
-        checkForUpdate() {
-            ipcRenderer.send('check-for-update')
-        },
         darwinShare(url) {
             ipcRenderer.send('share-menu', url)
         },
@@ -3636,6 +3653,7 @@ const app = new Vue({
             }          
         },
         skipToNextItem(){
+            app.prevButtonBackIndicator = false;
             // app.mk.skipToNextItem() is buggy somehow so use this
             if (this.mk.queue.nextPlayableItemIndex != -1 && this.mk.queue.nextPlayableItemIndex != null) 
             this.mk.changeToMediaAtIndex(this.mk.queue.nextPlayableItemIndex);
@@ -3644,6 +3662,10 @@ const app = new Vue({
             // app.mk.skipToPreviousItem() is buggy somehow so use this
             if (this.mk.queue.previousPlayableItemIndex != -1 && this.mk.queue.previousPlayableItemIndex != null)
             this.mk.changeToMediaAtIndex(this.mk.queue.previousPlayableItemIndex);
+        },
+        mediaKeyFixes(){
+            navigator.mediaSession.setActionHandler('previoustrack', function() { app.prevButton() });
+            navigator.mediaSession.setActionHandler('nexttrack', function() { app.skipToNextItem() });
         }
     }
 })
