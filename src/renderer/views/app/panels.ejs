@@ -16,6 +16,9 @@
 <transition name="modal">
   <audio-controls v-if="modals.audioControls"></audio-controls>
 </transition>
+<transition name="modal">
+  <plugin-menu v-if="modals.pluginMenu"></plugin-menu>
+</transition>
 <div id="apple-music-video-container">
     <div id="apple-music-video-player-controls">
         <div id="player-exit" title="Close" @click="exitMV()">

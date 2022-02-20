@@ -137,17 +137,19 @@
                         {{$root.getLz('app.name')}}
                     </div>
                 </button>
+                <button class="usermenu-item" v-if="pluginInstalled" 
+                    @click="modals.pluginMenu = true">
+                    <span class="usermenu-item-icon"><%- include("../svg/grid.svg") %></span>
+                    <span class="usermenu-item-name">{{$root.getLz('term.plugin')}}</span>
+                </button>
                 <button class="usermenu-item" @click="appRoute('settings')">
                     <span class="usermenu-item-icon"><%- include("../svg/settings.svg") %></span>
                     <span class="usermenu-item-name">{{$root.getLz('term.settings')}}</span>
                 </button>
                 <button class="usermenu-item" @click="unauthorize()">
                     <span class="usermenu-item-icon"
-                                style="right:2.5px;"><%- include("../svg/log-out.svg") %></span>
+                            style="right:2.5px;"><%- include("../svg/log-out.svg") %></span>
                     <span class="usermenu-item-name">{{$root.getLz('term.logout')}}</span>
-                </button>
-                <button class="usermenu-item" @click="entry.onClick()" v-for="entry in pluginMenuEntries">
-                    {{ entry.name }}
                 </button>
             </div>
         </div>
