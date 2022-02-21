@@ -2,7 +2,7 @@
   "name": "cider",
   "applicationId": "Cider",
   "productName": "Cider",
-  "version": "1.1.0",
+  "version": "1.2.1",
   "description": "A new look into listening and enjoying music in style and performance.",
   "license": "AGPL-3.0",
   "main": "./build/index.js",
@@ -101,9 +101,9 @@
     }
   ],
   "build": {
-    "electronVersion": "16.0.8",
+    "electronVersion": "16.0.9",
     "electronDownload": {
-      "version": "16.0.8+wvcus",
+      "version": "16.0.9+wvcus",
       "mirror": "https://github.com/castlabs/electron-releases/releases/download/v"
     },
     "appId": "cider",
