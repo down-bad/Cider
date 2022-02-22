@@ -1,6 +1,4 @@
 import * as RPC from 'discord-rpc'
-import {ipcMain} from "electron";
-import fetch from 'electron-fetch'
 
 export default class DiscordRichPresence {
 
@@ -106,7 +104,7 @@ export default class DiscordRichPresence {
 
 		// Check large image
         if (activity.largeImageKey == null || activity.largeImageKey === "" || activity.largeImageKey.length > 256) { 
-            activity.largeImageKey = "cider";
+            activity.largeImageKey = "am";
         }
 
 		// Timestamp 
@@ -124,11 +122,6 @@ export default class DiscordRichPresence {
             delete activity.largeImageText
         }
 
-		activity.buttons.forEach((key: {label: string, url: string}, _v: Number) => {
-			if (key.url.includes('undefined') || key.url.includes('no-id-found')) {
-                activity.buttons.splice(key, 1);
-			}
-		})
 		return activity
 	}
 
@@ -146,16 +139,16 @@ export default class DiscordRichPresence {
 
         this._activity = {
             details: attributes.name,
-            state: `${attributes.artistName ? `by ${attributes.artistName}` : ''}`,
+            state: `${attributes.artistName ? `${attributes.artistName}` : ''}`,
             startTimestamp: attributes.startTime,
             endTimestamp: attributes.endTime,
-            largeImageKey: attributes?.artwork?.url?.replace('{w}', '1024').replace('{h}', '1024'),
+            largeImageKey: attributes.artwork?.url?.replace('{w}', '1024').replace('{h}', '1024'),
             largeImageText: attributes.albumName,
             instance: false, // Whether the activity is in a game session
-            buttons: [
-                {label: "Listen on Cider", url: attributes.url.cider},
-                {label: "View on Apple Music", url: attributes.url.appleMusic},
-            ]
+            // buttons: [
+            //     {label: "Listen on Cider", url: attributes.url.cider},
+            //     {label: "View on Apple Music", url: attributes.url.appleMusic},
+            // ]
         };
 
 		this._activity = this.filterActivity(this._activity, attributes)
@@ -203,27 +196,8 @@ export default class DiscordRichPresence {
      * Runs on app ready
      */
     onReady(_win: any): void {
-        let self = this
-        this.connect((DiscordRichPresence._store.general.discord_rpc == 1) ? '911790844204437504' : '886578863147192350');
+        this.connect("927026912302362675");
         console.debug(`[Plugin][${this.name}] Ready.`);
-        ipcMain.on('updateRPCImage', (_event, imageurl) => {
-            if (!DiscordRichPresence._store.general.privateEnabled){
-            fetch('https://api.cider.sh/v1/images' ,{ 
-
-                method: 'POST',
-                body: JSON.stringify({url : imageurl}),
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'User-Agent': _win.webContents.getUserAgent()
-                },
-            })
-            .then(res => res.json())
-            .then(function(json){
-                self._attributes["artwork"]["url"] = json.url
-                self.updateActivity(self._attributes)
-            })
-            }
-        })
     }
 
     /**

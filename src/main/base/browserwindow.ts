@@ -10,7 +10,6 @@ import {networkInterfaces} from "os";
 import * as mm from 'music-metadata';
 import fetch from 'electron-fetch'
 import {wsapi} from "./wsapi";
-import {AppImageUpdater, NsisUpdater} from "electron-updater";
 import {utils} from './utils';
 
 const AdmZip = require("adm-zip");
@@ -180,7 +179,7 @@ export class BrowserWindow {
         minWidth: 900,
         minHeight: 390,
         frame: false,
-        title: "Apple Music",
+        title: "Cider",
         show: false,
         // backgroundColor: "#1E1E1E",
         titleBarStyle: 'hidden',
@@ -902,4 +901,3 @@ export class BrowserWindow {
         console.log('remote broadcasted')
     }
 }
-
