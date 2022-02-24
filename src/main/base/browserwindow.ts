@@ -5,7 +5,6 @@ import * as express from "express";
 import * as getPort from "get-port";
 import {search} from "youtube-search-without-api-key";
 import {existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync, statSync} from "fs";
-import {Stream} from "stream";
 import {networkInterfaces} from "os";
 import * as mm from 'music-metadata';
 import fetch from 'electron-fetch'
@@ -18,10 +17,6 @@ const AdmZip = require("adm-zip");
 export class BrowserWindow {
     public static win: any | undefined = null;
     private devMode: boolean = !app.isPackaged;
-
-    private audioStream: any = new Stream.PassThrough();
-    private headerSent: any = false;
-    private chromecastIP : any = [];
     private clientPort: number = 0;
     private remotePort: number = 6942;
     private EnvironmentVariables: object = {
