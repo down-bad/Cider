@@ -20,6 +20,8 @@ export class BrowserWindow {
     private devMode: boolean = !app.isPackaged;
 
     private audioStream: any = new Stream.PassThrough();
+    private headerSent: any = false;
+    private chromecastIP : any = [];
     private clientPort: number = 0;
     private remotePort: number = 6942;
     private EnvironmentVariables: object = {
@@ -45,7 +47,9 @@ export class BrowserWindow {
                 "pages/library-videos",
                 "pages/remote-pair",
                 "pages/themes-github",
+                "pages/plugins-github",
                 "pages/replay",
+                "pages/zoo",
                 "components/mediaitem-artwork",
                 "components/artwork-material",
                 "components/menu-panel",
@@ -70,8 +74,14 @@ export class BrowserWindow {
                 "components/lyrics-view",
                 "components/fullscreen",
                 "components/miniplayer",
+                "components/artist-chip",
             ],
             appRoutes: [
+                {
+                    page: "zoo",
+                    component: "<cider-zoo></cider-zoo>",
+                    condition: "page == 'zoo'"
+                },
                 {
                     page: "podcasts",
                     component: `<apple-podcasts></apple-podcasts>`,
@@ -151,6 +161,10 @@ export class BrowserWindow {
                     page: "themes-github",
                     component: `<themes-github></themes-github>`,
                     condition: `page == 'themes-github'`
+                },{
+                    page: "plugins-github",
+                    component: `<plugins-github></plugins-github>`,
+                    condition: `page == 'plugins-github'`
                 }, {
                     page: "podcasts",
                     component: `<apple-podcasts></apple-podcasts>`,
@@ -296,7 +310,7 @@ export class BrowserWindow {
                 console.error('Req not defined')
                 return
             }
-            if (req.url.includes("audio.webm") || (req.headers.host.includes("localhost") && (this.devMode || req.headers["user-agent"].includes("Electron")))) {
+            if (req.url.includes("audio.wav") || (req.headers.host.includes("localhost") && (this.devMode || req.headers["user-agent"].includes("Electron")))) {
                 next();
             } else {
                 res.redirect("https://discord.gg/applemusic");
@@ -380,22 +394,6 @@ export class BrowserWindow {
                 res.send(`// Plugin not found - ${pluginPath}`);
             }
         });
-
-        app.get("/audio.webm", (req, res) => {
-            try {
-                req.socket.setTimeout(Number.MAX_SAFE_INTEGER);
-                this.audioStream.on("data", (data: any) => {
-                    try {
-                        res.write(data);
-                    } catch (ex) {
-                        console.log(ex);
-                    }
-                });
-            } catch (ex) {
-                console.log(ex);
-            }
-        });
-        //app.use(express.static())
 
         app.listen(this.clientPort, () => {
             console.log(`Cider client port: ${this.clientPort}`);

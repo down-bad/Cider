@@ -5,6 +5,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100;300;400;500;700;900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap");
 @import url("less/ameframework.less");
+@import url("less/codicon.css");
 @import url("less/bootstrap.less");
 @import url("less/notyf.less");
 @import url("less/elements.less");
@@ -1249,7 +1250,6 @@ body[platform="darwin"] .app-chrome .app-chrome-item > .window-controls > div.cl
   border-radius: 4px;
   flex: 0 0 auto;
   margin: 6px;
-  box-shadow: inset 0px 0px 0px 1px rgb(200 200 200 / 25%);
   image-rendering: -webkit-optimize-contrast;
 }
 
@@ -2715,13 +2715,38 @@ input[type="range"].web-slider.display--small::-webkit-slider-thumb {
 
 .wpfade_transform-enter-active,
 .wpfade_transform-leave-active {
-  transition: opacity .1s var(--appleEase), transform .1s var(--appleEase);
+  --transitionTime: 0.2s;
+  transition: opacity var(--transitionTime) var(--appleEase), transform var(--transitionTime) var(--appleEase);
+  will-change: opacity, transform;
 }
 
-.wpfade_transform-enter,
-.wpfade_transform-leave-to {
-  transform: translateX(20px);
+.wpfade_transform-enter {
   opacity: 0;
+  transform: translateX(50%) translate3d(0,0,0);
+  will-change: opacity, transform;
+}
+.wpfade_transform-leave-to {
+  opacity: 0;
+  transform: translateX(-50%) translate3d(0,0,0);
+  will-change: opacity, transform;
+}
+
+
+.wpfade_transform_backwards-enter-active,
+.wpfade_transform_backwards-leave-active {
+  --transitionTime: 0.2s;
+  transition: opacity var(--transitionTime) var(--appleEase), transform var(--transitionTime) var(--appleEase);
+}
+
+.wpfade_transform_backwards-enter {
+  opacity: 0;
+  transform: translateX(-50%) translate3d(0,0,0);
+  will-change: opacity, transform;
+}
+.wpfade_transform_backwards-leave-to {
+  opacity: 0;
+  transform: translateX(50%) translate3d(0,0,0);
+  will-change: opacity, transform;
 }
 
 .fabfade-enter-active,

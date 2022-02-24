@@ -1,16 +1,9 @@
-<script type="text/x-template" id="themes-github">
+<script type="text/x-template" id="plugins-github">
     <div class="content-inner github-themes-page">
         <div class="gh-header">
             <div class="row">
                 <div class="col nopadding">
-                    <h1 class="header-text">{{$root.getLz('settings.header.visual.theme.github.page')}}</h1>
-                </div>
-                <div class="col-auto flex-center">
-                    <select class="md-select" @change="$root.setTheme($root.cfg.visual.theme)" v-model="$root.cfg.visual.theme">
-                        <option value="default.less">{{$root.getLz('settings.option.visual.theme.default')}}</option>
-                        <option value="dark.less">{{$root.getLz('settings.option.visual.theme.dark')}}</option>
-                        <option v-for="theme in themes" :value="theme.file">{{ theme.name }}</option>
-                    </select>
+                    <h1 class="header-text">Plugins from GitHub</h1>
                 </div>
                 <div class="col-auto nopadding flex-center">
                     <button class="md-btn md-btn-small md-btn-block" @click="installThemeURL()">
@@ -31,9 +24,6 @@
                                     <h4 class="repo-name">{{ (repo.description != null) ? repo.description : repo.full_name }}</h4>
                                     <div>⭐ {{ repo.stargazers_count }}</div>
                                 </div>
-                            </div>
-                            <div class="col-auto">
-                                <span v-if="themesInstalled.includes(repo.full_name)" class="codicon codicon-cloud-download"></span>
                             </div>
                         </div>
                     </li>
@@ -72,8 +62,8 @@
     </div>
 </script>
 <script>
-    Vue.component('themes-github', {
-        template: "#themes-github",
+    Vue.component('plugins-github', {
+        template: "#plugins-github",
         props: [],
         data: function () {
             return {
@@ -89,12 +79,10 @@
                     },
                     readme: ""
                 },
-                themesInstalled: [],
-                themes: []
+                themesInstalled: []
             }
         },
         mounted() {
-            this.themes = ipcRenderer.sendSync("get-themes")
             this.getRepos();
             this.getInstalledThemes();
         },
@@ -105,7 +93,6 @@
                 // for each theme, get the github_repo property and push it to the themesInstalled array, if not blank
                 themes.forEach(theme => {
                     if (theme.github_repo !== "") {
-                        theme.github_repo = theme.github_repo.toLowerCase()
                         self.themesInstalled.push(theme.github_repo)
                     }
                 })
@@ -145,7 +132,6 @@
                         ipcRenderer.once("theme-installed", (event, arg) => {
                             if (arg.success) {
                                 self.themes = ipcRenderer.sendSync("get-themes")
-                                self.getInstalledThemes()
                                 notyf.success(app.getLz('settings.notyf.visual.theme.install.success'));
                             } else {
                                 notyf.error(app.getLz('settings.notyf.visual.theme.install.error'));
@@ -178,14 +164,10 @@
                     redirect: 'follow'
                 };
 
-                fetch("https://api.github.com/search/repositories?q=topic:cidermusictheme fork:true", requestOptions)
+                fetch("https://api.github.com/search/repositories?q=topic:cidermusicplugin fork:true", requestOptions)
                     .then(response => response.text())
                     .then(result => {
-                        let items = JSON.parse(result).items
-                        items.forEach(repo => {
-                            repo.full_name = repo.full_name.toLowerCase()
-                        })
-                        self.repos = items
+                        self.repos = JSON.parse(result).items
                     })
                     .catch(error => console.log('error', error));
             }
