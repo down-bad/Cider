@@ -786,20 +786,6 @@ export class BrowserWindow {
                 ip: `${BrowserWindow.getIP()}`
             }, `http://${BrowserWindow.getIP()}:${this.remotePort}`);
         }
-        // Get previews for normalization
-        ipcMain.on("getPreviewURL", (_event, url) => {
-
-            fetch(url)
-                .then(res => res.buffer())
-                .then(async (buffer) => {
-                    const metadata = await mm.parseBuffer(buffer, 'audio/x-m4a');
-                    let SoundCheckTag = metadata.native.iTunes[1].value
-                    console.log('sc', SoundCheckTag)
-                    BrowserWindow.win.webContents.send('SoundCheckTag', SoundCheckTag)
-                }).catch(err => {
-                    console.log(err)
-                });
-        });
 
         ipcMain.on('share-menu', async (_event, url) => {
             if (process.platform != 'darwin') return;
