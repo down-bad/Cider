@@ -47,23 +47,23 @@ Array.prototype.limit = function (n) {
 };
 
 const store = new Vuex.Store({
-	state: {
-		library: {
-			songs: ipcRenderer.sendSync("get-library-songs"),
-			albums: ipcRenderer.sendSync("get-library-albums"),
-			recentlyAdded: ipcRenderer.sendSync("get-library-recentlyAdded"),
-			playlists: ipcRenderer.sendSync("get-library-playlists"),
-		},
-		artwork: {
-			playerLCD: "",
-		},
-	},
-	mutations: {
-		setLCDArtwork(state, artwork) {
-			state.artwork.playerLCD = artwork;
-		},
-	},
-});
+    state: {
+        library: {
+            songs: ipcRenderer.sendSync("get-library-songs"),
+            albums: ipcRenderer.sendSync("get-library-albums"),
+            recentlyAdded: ipcRenderer.sendSync("get-library-recentlyAdded"),
+            playlists: ipcRenderer.sendSync("get-library-playlists")
+        },
+        artwork: {
+            playerLCD: ""
+        }
+    },
+    mutations: {
+        setLCDArtwork(state, artwork) {
+            state.artwork.playerLCD = artwork
+        }
+    }
+})
 
 const app = new Vue({
     el: "#app",
@@ -211,6 +211,10 @@ const app = new Vue({
         tmpVar: [],
         notification: false,
         chrome: {
+            appliedTheme: {
+                location: "",
+                info: {}
+            },
             desiredPageTransition: "wpfade_transform",
             hideUserInfo: ipcRenderer.sendSync("is-dev") || false,
             artworkReady: false,
@@ -775,13 +779,18 @@ const app = new Vue({
 
             MusicKit.getInstance().videoContainerElement = document.getElementById("apple-music-video-player")
 
-            ipcRenderer.on('play', function(_event, mode, id) {
-              if (mode !== 'url'){
-                self.mk.setQueue({[mode]: id , parameters : {l : self.mklang}}).then(() => {
-                    app.mk.play()
-                })
-                
-              } else {
+            ipcRenderer.on('theme-update', (event, arg) => {
+                less.refresh(true, true, true)
+                self.setTheme(self.cfg.visual.theme, true)
+            })
+
+            ipcRenderer.on('play', function (_event, mode, id) {
+                if (mode !== 'url') {
+                    self.mk.setQueue({[mode]: id, parameters: {l: self.mklang}}).then(() => {
+                        app.mk.play()
+                    })
+
+                } else {
                     app.openAppleMusicURL(id)
                 }
             });
@@ -861,7 +870,7 @@ const app = new Vue({
             }, 500)
             ipcRenderer.invoke("renderer-ready", true)
         },
-        setTheme(theme = "") {
+        async setTheme(theme = "", onlyPrefs = false) {
             console.log(theme)
             if (this.cfg.visual.theme == "") {
                 this.cfg.visual.theme = "default.less"
@@ -869,13 +878,37 @@ const app = new Vue({
             if (theme == "") {
                 theme = this.cfg.visual.theme
             } else {
+                this.cfg.visual.theme = ""
                 this.cfg.visual.theme = theme
             }
-            document.querySelector("#userTheme").href = `themes/${this.cfg.visual.theme}`
-            document.querySelectorAll(`[id*='less']`).forEach(el => {
-                el.remove()
-            });
-            less.refresh()
+            const info = {}
+            try {
+                const infoResponse = await fetch("themes/" + app.cfg.visual.theme.replace("index.less", "theme.json"))
+                this.chrome.appliedTheme.info = await infoResponse.json()
+            }catch(e){
+                e=null
+                console.warn("failed to get theme.json")
+                this.chrome.appliedTheme.info = {}
+            }
+
+
+            if(!onlyPrefs) {
+                document.querySelector("#userTheme").href = `themes/${this.cfg.visual.theme}`
+                document.querySelectorAll(`[id*='less']`).forEach(el => {
+                    el.remove()
+                });
+                less.refresh()
+            }
+        },
+        getThemeDirective(directive = "") {
+            if(typeof this.chrome.appliedTheme.info.directives != "object") {
+                return ""
+            }
+            if(this.chrome.appliedTheme.info.directives[directive]) {
+                return this.chrome.appliedTheme.info.directives[directive].value
+            } else {
+                return ""
+            }
         },
         unauthorize() {
             bootbox.confirm(app.getLz('term.confirmLogout'), function (result) {
@@ -892,6 +925,10 @@ const app = new Vue({
             }
             if (this.cfg.visual.window_background_style == "none") {
                 classes.simplebg = true
+            }
+
+            if(this.getThemeDirective('windowLayout') == 'twopanel') {
+                classes.twopanel = true
             }
             return classes
         },
@@ -1370,7 +1407,7 @@ const app = new Vue({
                 if (kind.includes("album")) {
                     params["include[albums]"] = "artists"
                     params["fields[artists]"] = "name,url"
-                    params["fields[albums]"] = "artistName,artistUrl,artwork,contentRating,editorialArtwork,name,playParams,releaseDate,url,copyright"
+                    params["fields[albums]"] = "artistName,artistUrl,artwork,contentRating,editorialArtwork,editorialVideo,name,playParams,releaseDate,url,copyright"
                 }
 
                 if (this.cfg.advanced.experiments.includes('inline-playlists')) {
@@ -1678,6 +1715,10 @@ const app = new Vue({
                 })
                 sortSongs()
             }
+        },
+        getAlbumSort() { 
+             this.library.albums.sortOrder[1] = this.cfg.libraryPrefs.albums.sortOrder;
+             this.library.albums.sorting[1] = this.cfg.libraryPrefs.albums.sort; 
         },
         // make a copy of searchLibrarySongs except use Albums instead of Songs
         searchLibraryAlbums(index) {
@@ -3023,7 +3064,7 @@ const app = new Vue({
                 "include[music-videos]": "artists",
                 "extend": "artistUrl",
                 "fields[artists]": "url,name,artwork,hero",
-                "fields[albums]": "artistName,artistUrl,artwork,contentRating,editorialArtwork,name,playParams,releaseDate,url",
+                "fields[albums]": "artistName,artistUrl,artwork,contentRating,editorialArtwork,editorialVideo,name,playParams,releaseDate,url",
                 "with": "serverBubbles,lyricHighlights",
                 "art[url]": "c,f",
                 "omit[resource]": "autos",
