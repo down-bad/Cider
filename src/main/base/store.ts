@@ -15,7 +15,15 @@ export class Store {
             "update_branch": "main",
             "resumeOnStartupBehavior": "local",
             "privateEnabled": false,
-            "themeUpdateNotification": true
+            "themeUpdateNotification": true,
+            "sidebarItems": {
+                "recentlyAdded": true,
+                "songs": true,
+                "albums": true,
+                "artists": true,
+                "videos": true,
+                "podcasts": true
+            }
         },
         "home": {
             "followedArtists": [],
@@ -118,7 +126,8 @@ export class Store {
         },
         "advanced": {
             "AudioContext": false,
-            "experiments": []
+            "experiments": [],
+            "playlistTrackMapping": true
         }
     }
     private migrations: any = {}

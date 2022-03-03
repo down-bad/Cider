@@ -170,10 +170,6 @@ export class BrowserWindow {
                     component: `<plugins-github></plugins-github>`,
                     condition: `page == 'plugins-github'`
                 }, {
-                    page: "podcasts",
-                    component: `<apple-podcasts></apple-podcasts>`,
-                    condition: `page == 'podcasts'`
-                }, {
                     page: "remote-pair",
                     component: `<remote-pair></remote-pair>`,
                     condition: `page == 'remote-pair'`
@@ -268,6 +264,7 @@ export class BrowserWindow {
         const windowState = windowStateKeeper({
             defaultWidth: 1024,
             defaultHeight: 600,
+            fullScreen: false
         });
         this.options.width = windowState.width;
         this.options.height = windowState.height;
@@ -412,9 +409,8 @@ export class BrowserWindow {
             }
         });
 
-        app.get("/themes/:theme/*", (req, res) => {
+        app.get("/themes/:theme/*", (req: {params: {theme: string, 0: string}}, res) => {
             const theme = req.params.theme;
-            // @ts-ignore
             const file = req.params[0];
             const themePath = join(utils.getPath('srcPath'), "./renderer/themes/", theme);
             const userThemePath = join(utils.getPath('themes'), theme);
@@ -427,9 +423,8 @@ export class BrowserWindow {
             }
         });
 
-        app.get("/plugins/:plugin/*", (req, res) => {
+        app.get("/plugins/:plugin/*", (req: {params: {plugin: string, 0: string}}, res) => {
             const plugin = req.params.plugin;
-            // @ts-ignore
             const file = req.params[0];
             const pluginPath = join(utils.getPath('plugins'), plugin);
             console.log(pluginPath)
@@ -678,79 +673,22 @@ export class BrowserWindow {
             event.returnValue = this.devMode;
         });
 
-        ipcMain.on("put-library-songs", (_event, arg) => {
+        ipcMain.handle("put-cache", (_event, arg) => {
             writeFileSync(
-                join(utils.getPath('ciderCache'), "library-songs.json"),
-                JSON.stringify(arg)
+                join(utils.getPath('ciderCache'), `${arg.file}.json`),
+                arg.data
             );
         });
 
-        ipcMain.on("put-library-artists", (_event, arg) => {
-            writeFileSync(
-                join(utils.getPath('ciderCache'), "library-artists.json"),
-                JSON.stringify(arg)
-            );
-        });
-
-        ipcMain.on("put-library-albums", (_event, arg) => {
-            writeFileSync(
-                join(utils.getPath('ciderCache'), "library-albums.json"),
-                JSON.stringify(arg)
-            );
-        });
-
-        ipcMain.on("put-library-playlists", (_event, arg) => {
-            writeFileSync(
-                join(utils.getPath('ciderCache'), "library-playlists.json"),
-                JSON.stringify(arg)
-            );
-        });
-
-        ipcMain.on("put-library-recentlyAdded", (_event, arg) => {
-            writeFileSync(
-                join(utils.getPath('ciderCache'), "library-recentlyAdded.json"),
-                JSON.stringify(arg)
-            );
-        });
-
-        ipcMain.on("get-library-songs", (event) => {
-            let librarySongs = readFileSync(
-                join(utils.getPath('ciderCache'), "library-songs.json"),
-                "utf8"
-            );
-            event.returnValue = JSON.parse(librarySongs);
-        });
-
-        ipcMain.on("get-library-artists", (event) => {
-            let libraryArtists = readFileSync(
-                join(utils.getPath('ciderCache'), "library-artists.json"),
-                "utf8"
-            );
-            event.returnValue = JSON.parse(libraryArtists);
-        });
-
-        ipcMain.on("get-library-albums", (event) => {
-            let libraryAlbums = readFileSync(
-                join(utils.getPath('ciderCache'), "library-albums.json"),
-                "utf8"
-            );
-            event.returnValue = JSON.parse(libraryAlbums);
-        });
-
-        ipcMain.on("get-library-playlists", (event) => {
-            let libraryPlaylists = readFileSync(
-                join(utils.getPath('ciderCache'), "library-playlists.json"),
-                "utf8"
-            );
-            event.returnValue = JSON.parse(libraryPlaylists);
-        });
-
-        ipcMain.on("get-library-recentlyAdded", (event) => {
-            let libraryRecentlyAdded = readFileSync(
-                join(utils.getPath('ciderCache'), "library-recentlyAdded.json"),
-                "utf8"
-            );
-            event.returnValue = JSON.parse(libraryRecentlyAdded);
+        ipcMain.on("get-cache", (event, arg) => {
+            let read = ""
+            if (existsSync(join(utils.getPath('ciderCache'), `${arg}.json`))) {
+                read = readFileSync(
+                    join(utils.getPath('ciderCache'), `${arg}.json`),
+                    "utf8"
+                );
+            }
+            event.returnValue = read;
         });
 
         ipcMain.handle("getYTLyrics", async (_event, track, artist) => {
@@ -840,7 +778,6 @@ export class BrowserWindow {
                 title: 'Share',
                 urls: [url]
             };
-            // @ts-ignore
             const shareMenu = new ShareMenu(options);
             shareMenu.popup();
         })
