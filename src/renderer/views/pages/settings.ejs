@@ -747,6 +747,13 @@
                 //  setStoreValue does not change plugin store values somehow
                 ipcRenderer.invoke('update-store-mtt', app.cfg.general.close_behavior);
             },
+            promptForRelaunch(){
+                bootbox.confirm(app.getLz('action.relaunch.confirm'), function (result) {
+                if (result) {
+                    ipcRenderer.send('relaunchApp','');
+                }
+            });          
+            }
         }
     })
 </script>

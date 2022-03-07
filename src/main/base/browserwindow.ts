@@ -16,7 +16,12 @@ import {utils} from './utils';
 const fileWatcher = require('chokidar');
 const AdmZip = require("adm-zip");
 
+/**
+ * @file Creates the BrowserWindow
+ * @author CiderCollective
+ */
 
+/** @namespace */
 export class BrowserWindow {
     public static win: any | undefined = null;
     private devMode: boolean = !app.isPackaged;
@@ -254,6 +259,9 @@ export class BrowserWindow {
 
     /**
      * Creates the browser window
+     * @generator
+     * @function createWindow
+     * @yields {object} Electron browser window
      */
     async createWindow(): Promise<Electron.BrowserWindow> {
         this.clientPort = await getPort({port: 9000});
@@ -274,8 +282,9 @@ export class BrowserWindow {
 
                 break;
             case "win32":
-                this.options.backgroundColor = "#1E1E1E";
-                this.options.transparent = false;
+                if (!(utils.getStoreValue('visual.transparent') ?? false)){
+                this.options.backgroundColor = "#1E1E1E";} else {
+                this.options.transparent = true;}
                 break;
             case "linux":
                 this.options.backgroundColor = "#1E1E1E";
@@ -294,6 +303,12 @@ export class BrowserWindow {
         this.startWebServer();
 
         BrowserWindow.win = new bw(this.options);
+        // cant be built in CI 
+        // if (process.platform === "win32" && (utils.getStoreValue('visual.transparent') ?? false)) {
+        //     var electronVibrancy = require('electron-vibrancy-updated');
+        //     electronVibrancy.SetVibrancy(BrowserWindow.win, 0);
+
+        // }
         const ws = new wsapi(BrowserWindow.win)
         ws.InitWebSockets()
         // and load the renderer.
@@ -741,9 +756,15 @@ export class BrowserWindow {
         ipcMain.on('setFullScreen', (_event, flag) => {
             BrowserWindow.win.setFullScreen(flag)
         })
+
         //Fullscreen
         ipcMain.on('detachDT', (_event, _) => {
             BrowserWindow.win.webContents.openDevTools({mode: 'detach'});
+        })  
+        
+        ipcMain.on('relaunchApp',(_event, _) => {
+            app.relaunch()
+            app.exit()
         })
 
 
@@ -757,11 +778,11 @@ export class BrowserWindow {
 
         ipcMain.on('get-remote-pair-url', (_event, _) => {
             let url = `http://${BrowserWindow.getIP()}:${this.remotePort}`;
-            if (app.isPackaged) {
+            //if (app.isPackaged) {
                 BrowserWindow.win.webContents.send('send-remote-pair-url', (`https://cider.sh/pair-remote?url=${Buffer.from(encodeURI(url)).toString('base64')}`).toString());
-            } else {
-                BrowserWindow.win.webContents.send('send-remote-pair-url', (`http://127.0.0.1:5500/pair-remote.html?url=${Buffer.from(encodeURI(url)).toString('base64')}`).toString());
-            }
+            //} else {
+            //    BrowserWindow.win.webContents.send('send-remote-pair-url', (`http://127.0.0.1:5500/pair-remote.html?url=${Buffer.from(encodeURI(url)).toString('base64')}`).toString());
+            //}
 
         });
         if (process.platform === "darwin") {

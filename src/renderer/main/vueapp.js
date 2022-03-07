@@ -3,7 +3,7 @@ import {store} from './vuex-store.js';
 Vue.use(VueHorizontal);
 Vue.use(VueObserveVisibility);
 Vue.use(BootstrapVue)
-
+/* @namespace */
 const app = new Vue({
     store: store,
     data: {
@@ -290,6 +290,13 @@ const app = new Vue({
             this.lz = ipcRenderer.sendSync("get-i18n", lang)
             this.mklang = await this.MKJSLang()
         },
+        /**
+         * Grabs translation for localization.
+         * @param {string} message - The key to grab the translated term
+         * @param {object} options - Optional options
+         * @author booploops#7139
+         * @memberOf app
+         */
         getLz(message, options = {}) {
             if (this.lz[message]) {
                 if (options["count"]) {
@@ -1488,6 +1495,14 @@ const app = new Vue({
                 });
                 window.location.hash = `${kind}/${id}`
                 document.querySelector("#app-content").scrollTop = 0
+            } else if (kind == "editorial-elements") {
+                console.log(item)
+                if (item.relationships?.contents?.data != null && item.relationships?.contents?.data.length > 0){
+                    this.routeView(item.relationships.contents.data[0])
+                } else if (item.attributes?.link?.url != null){
+                    window.open(item.attributes.link.url)  
+                }
+
             } else if (kind.toString().includes("artist")) {
                 app.getArtistInfo(id, isLibrary)
                 window.location.hash = `${kind}/${id}${isLibrary ? "/" + isLibrary : ''}`
@@ -3507,7 +3522,7 @@ const app = new Vue({
             return event.deltaY < 0;
         },
         volumeUp() {
-            if ((app.mk.volume + app.cfg.audio.volumeStep) > 1) {
+            if ((app.mk.volume + app.cfg.audio.volumeStep) > app.cfg.audio.maxVolume) {
                 app.mk.volume = app.cfg.audio.maxVolume;
                 console.log('setting max volume')
             } else {
@@ -3829,17 +3844,20 @@ const app = new Vue({
                 ipcRenderer.send('windowmin', 844, 410)
                 ipcRenderer.send('windowresize', this.tmpWidth, this.tmpHeight, false)
                 ipcRenderer.send('windowontop', false)
-                this.cfg.visual.miniplayer_top_toggle = true;
+                //this.cfg.visual.miniplayer_top_toggle = true;
                 app.appMode = 'player';
             }
         },
-        pinMiniPlayer() {
-            if (this.cfg.visual.miniplayer_top_toggle) {
+        pinMiniPlayer(status = false) {
+            if (!status){
+            if (!this.cfg.visual.miniplayer_top_toggle) {
                 ipcRenderer.send('windowontop', true)
-                this.cfg.visual.miniplayer_top_toggle = false
+                this.cfg.visual.miniplayer_top_toggle = true;
             } else {
                 ipcRenderer.send('windowontop', false)
-                this.cfg.visual.miniplayer_top_toggle = true;
+                this.cfg.visual.miniplayer_top_toggle = false;
+            }} else {
+                ipcRenderer.send('windowontop', this.cfg.visual.miniplayer_top_toggle ?? false)
             }
         },
         formatTimezoneOffset: (e = new Date) => {
@@ -3974,6 +3992,8 @@ const app = new Vue({
         },
         checkForUpdate() {
             ipcRenderer.send('check-for-update')
+            document.getElementById('settings.option.general.updateCider.check').innerHTML = 'Checking...'
+            notyf.success('Checking for update in background...')
             ipcRenderer.on('update-response', (event, res) => {
                 if (res === "update-not-available") {
                     notyf.error(app.getLz(`settings.notyf.updateCider.${res}`))
@@ -3984,7 +4004,7 @@ const app = new Vue({
                 } else if (res === "update-timeout") {
                     notyf.error(app.getLz(`settings.notyf.updateCider.${res}`))
                 }
-
+                document.getElementById('settings.option.general.updateCider.check').innerHTML = app.getLz('term.check')
             })
         },
     }
