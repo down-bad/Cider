@@ -15,7 +15,6 @@
                                  v-if="mk.nowPlayingItem['attributes']['contentRating'] == 'explicit'"
                                  style="display: inline-block"></div>
                         </div>
-                        <div class="audio-type ppe-icon" v-if="cfg.audio.maikiwiAudio.ciderPPE === true"></div>
                         <div class="song-artist-album">
                             <div class="song-artist-album-content"
                                  :class="[isElementOverflowing('#app-main > .app-chrome .app-chrome-item > .app-playback-controls > div >.song-artist-album > .song-artist-album-content') ? 'marquee' : '']"
@@ -31,6 +30,12 @@
                                     {{(mk.nowPlayingItem["attributes"]["albumName"]) ?
                                     (mk.nowPlayingItem["attributes"]["albumName"]) : "" }}
                                 </div>
+                                <div class="song-artist item-navigate" style="display: inline-block"
+                                v-if="mk.nowPlayingItem['attributes']['releaseDate'] != ''">
+                                <div class="separator" style="display: inline-block;">{{"—"}}</div>
+                                {{(mk.nowPlayingItem["attributes"]["releaseDate"]) ?
+                                (mk.nowPlayingItem["attributes"]["releaseDate"].split("T")[0]) : "" }}
+                            </div>
                             </div>
                         </div>
                     </div>
