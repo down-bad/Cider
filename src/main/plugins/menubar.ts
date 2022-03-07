@@ -38,10 +38,6 @@ export default class Thumbar {
         {
             label: app.getName(),
             submenu: [
-                {
-                    label: 'About',
-                    click: () => this._win.webContents.executeJavaScript(`app.appRoute('about')`)
-                },
                 { type: 'separator' },
                 {
                     label: 'Settings',
@@ -95,17 +91,6 @@ export default class Thumbar {
                     ]
                 },
                 {type: 'separator'},
-                {
-                    label: 'Web Remote',
-                    accelerator: 'CommandOrControl+Shift+W',
-                    sublabel: 'Opens in external window',
-                    click: () => this._win.webContents.executeJavaScript(`ipcRenderer.invoke('showQR')`)
-                },
-                {
-                    label: 'Audio Settings',
-                    accelerator: 'CommandOrControl+Shift+A',
-                    click: () => this._win.webContents.executeJavaScript(`app.modals.audioSettings = true`)
-                },
                 {
                     label: 'Plug-in Menu',
                     accelerator: 'CommandOrControl+Shift+P',
@@ -162,38 +147,6 @@ export default class Thumbar {
             label: 'Support',
             role: 'help',
             submenu: [
-                {
-                    label: 'Discord',
-                    click: () => shell.openExternal("https://discord.gg/AppleMusic").catch(console.error)
-                },
-                {
-                    label: 'GitHub Wiki',
-                    click: () => shell.openExternal("https://github.com/ciderapp/Cider/wiki/Troubleshooting").catch(console.error)
-                },
-                {type: 'separator'},
-                {
-                    label: 'Report a...',
-                    submenu: [
-                        {
-                            label: 'Bug',
-                            click: () => shell.openExternal("https://github.com/ciderapp/Cider/issues/new?assignees=&labels=bug%2Ctriage&template=bug_report.yaml&title=%5BBug%5D%3A+").catch(console.error)
-                        },
-                        {
-                            label: 'Feature Request',
-                            click: () => shell.openExternal("https://github.com/ciderapp/Cider/issues/new?assignees=&labels=enhancement%2Ctriage&template=feature_request.yaml&title=%5BEnhancement%5D%3A+").catch(console.error)
-                        },
-                        {
-                            label: 'Translation Report/Request',
-                            click: () => shell.openExternal("https://github.com/ciderapp/Cider/issues/new?assignees=&labels=%F0%9F%8C%90+Translations&template=translation.yaml&title=%5BTranslation%5D%3A+").catch(console.error)
-                        },
-                    ]
-                },
-                {type: 'separator'},
-                {
-                    label: 'View License',
-                    click: () => shell.openExternal("https://github.com/ciderapp/Cider/blob/main/LICENSE").catch(console.error)
-                },
-                {type: 'separator'},
                 {
                     label: 'Toggle Developer Tools',
                     accelerator: 'Option+CommandOrControl+I',
